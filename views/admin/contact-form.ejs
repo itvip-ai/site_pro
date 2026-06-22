@@ -1,0 +1,71 @@
+<%- include('../partials/admin-head') %>
+
+<header class="page-head">
+  <h1><%= isNew ? t('admin.contacts.newTitle') : t('admin.contacts.editTitle') %></h1>
+  <a href="/admin/contacts" class="btn btn--ghost"><%= t('admin.contacts.backToList') %></a>
+</header>
+
+<form class="form form--card"
+      action="<%= isNew ? '/admin/contacts' : '/admin/contacts/' + contact.id %>"
+      method="post" enctype="multipart/form-data">
+
+  <div class="form-grid">
+    <label class="field field--full">
+      <span><%= t('admin.contacts.f.name') %> *</span>
+      <input type="text" name="name" value="<%= contact.name || '' %>" required />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.contacts.f.position') %></span>
+      <input type="text" name="position" value="<%= contact.position || '' %>" placeholder="<%= t('admin.contacts.f.positionHint') %>" />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.contacts.f.positionRo') %></span>
+      <input type="text" name="position_ro" value="<%= contact.position_ro || '' %>" />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.contacts.f.department') %></span>
+      <input type="text" name="department" value="<%= contact.department || '' %>" />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.contacts.f.order') %></span>
+      <input type="number" name="sort_order" value="<%= contact.sort_order != null ? contact.sort_order : 0 %>" />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.contacts.f.phone') %></span>
+      <input type="text" name="phone" value="<%= contact.phone || '' %>" placeholder="+373 ..." />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.contacts.f.email') %></span>
+      <input type="email" name="email" value="<%= contact.email || '' %>" />
+    </label>
+
+    <div class="field field--full">
+      <span><%= t('admin.contacts.f.photo') %></span>
+      <div class="image-upload">
+        <% if (contact.photo_path) { %>
+          <img class="image-upload__preview" src="<%= contact.thumb_path || contact.photo_path %>" alt="" />
+        <% } %>
+        <input type="file" name="photo" accept="image/*" />
+        <small class="muted"><%= t('admin.contacts.f.photoHint') %></small>
+      </div>
+    </div>
+
+    <label class="field field--full checkbox">
+      <input type="checkbox" name="is_active" value="1" <%= contact.is_active ? 'checked' : '' %> />
+      <span><%= t('admin.contacts.f.showOnSite') %></span>
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn--primary btn--lg"><%= isNew ? t('admin.form.create') : t('admin.form.save') %></button>
+    <a href="/admin/contacts" class="btn btn--ghost btn--lg"><%= t('admin.form.cancel') %></a>
+  </div>
+</form>
+
+<%- include('../partials/admin-foot') %>

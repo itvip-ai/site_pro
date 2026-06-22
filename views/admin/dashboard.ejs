@@ -1,0 +1,30 @@
+<%- include('../partials/admin-head') %>
+
+<header class="page-head">
+  <h1><%= t('admin.dashboard.title') %></h1>
+</header>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-card__value"><%= stats.products %></div>
+    <div class="stat-card__label"><%= t('admin.dashboard.products') %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__value"><%= stats.categories %></div>
+    <div class="stat-card__label"><%= t('admin.dashboard.categories') %></div>
+  </div>
+  <% if (stats.users != null) { %>
+    <div class="stat-card">
+      <div class="stat-card__value"><%= stats.users %></div>
+      <div class="stat-card__label"><%= t('admin.dashboard.users') %></div>
+    </div>
+  <% } %>
+</div>
+
+<div class="quick-actions">
+  <a href="/admin/products/new" class="btn btn--primary"><%= t('admin.dashboard.addProduct') %></a>
+  <a href="/admin/products" class="btn btn--ghost"><%= t('admin.dashboard.allProducts') %></a>
+  <a href="/admin/users" class="btn btn--ghost"><%= t('admin.nav.users') %></a>
+</div>
+
+<%- include('../partials/admin-foot') %>

@@ -1,0 +1,60 @@
+<%- include('../partials/admin-head') %>
+
+<header class="page-head">
+  <h1><%= t('admin.contacts.title') %> <span class="muted">(<%= contacts.length %>)</span></h1>
+  <a href="/admin/contacts/new" class="btn btn--primary"><%= t('admin.contacts.add') %></a>
+</header>
+
+<% if (!contacts.length) { %>
+  <div class="empty"><%= t('admin.contacts.empty') %></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th><%= t('admin.contacts.th.photo') %></th>
+          <th><%= t('admin.contacts.th.name') %></th>
+          <th><%= t('admin.contacts.th.position') %></th>
+          <th><%= t('admin.contacts.th.department') %></th>
+          <th><%= t('admin.contacts.th.contacts') %></th>
+          <th class="ta-r"><%= t('admin.contacts.th.order') %></th>
+          <th><%= t('admin.th.status') %></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% contacts.forEach(function(c) { %>
+          <tr class="<%= c.is_active ? '' : 'row--hidden' %>">
+            <td class="td-img">
+              <% if (c.thumb_path || c.photo_path) { %>
+                <img src="<%= c.thumb_path || c.photo_path %>" alt="" />
+              <% } else { %><span class="td-img__none">—</span><% } %>
+            </td>
+            <td><a href="/admin/contacts/<%= c.id %>/edit"><%= c.name %></a></td>
+            <td><%= c.position || '—' %></td>
+            <td><%= c.department || '—' %></td>
+            <td class="muted">
+              <% if (c.phone) { %><div><%= c.phone %></div><% } %>
+              <% if (c.email) { %><div><%= c.email %></div><% } %>
+              <% if (!c.phone && !c.email) { %>—<% } %>
+            </td>
+            <td class="ta-r mono"><%= c.sort_order %></td>
+            <td>
+              <% if (c.is_active) { %><span class="badge badge--ok"><%= t('admin.products.visible') %></span>
+              <% } else { %><span class="badge badge--muted"><%= t('common.hidden') %></span><% } %>
+            </td>
+            <td class="ta-r nowrap">
+              <a href="/admin/contacts/<%= c.id %>/edit" class="btn btn--ghost btn--sm">✏️</a>
+              <form action="/admin/contacts/<%= c.id %>/delete" method="post" class="inline"
+                    onsubmit="return confirm('<%= t('admin.contacts.confirmDelete') %>')">
+                <button class="btn btn--ghost btn--sm">🗑</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/admin-foot') %>

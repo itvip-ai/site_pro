@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title : 'QGROUP' %> — QGROUP</title>
+  <link rel="icon" href="/images/logo.png" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/">
+        <img class="brand__logo" src="/images/logo.png" alt="QGROUP" />
+      </a>
+
+      <form class="header-search" action="/catalog" method="get" role="search">
+        <input type="search" name="search" placeholder="<%= t('search.placeholder') %>"
+               value="<%= typeof search !== 'undefined' ? search : '' %>" aria-label="<%= t('search.btn') %>" />
+        <button type="submit" aria-label="<%= t('search.btn') %>">🔍</button>
+      </form>
+
+      <nav class="site-nav">
+        <span class="lang-switch">
+          <a href="/lang/ru?return=<%= encodeURIComponent(currentPath) %>" class="<%= lang === 'ru' ? 'is-active' : '' %>">RU</a>
+          <a href="/lang/ro?return=<%= encodeURIComponent(currentPath) %>" class="<%= lang === 'ro' ? 'is-active' : '' %>">RO</a>
+        </span>
+        <a href="/catalog"><%= t('nav.catalog') %></a>
+        <a href="/contacts"><%= t('nav.contacts') %></a>
+        <% if (currentUser) { %>
+          <% if (role === 'admin' || role === 'sales' || role === 'partner') { %>
+            <a href="/kp"><%= t('nav.kp') %></a>
+            <% const kpCartUrl = (role === 'partner' ? '/kp/partner' : '/kp/general') + '?fromCart=1'; %>
+            <button type="button" class="btn btn--ghost btn--sm cart-toggle" id="cart-root" data-kp-url="<%= kpCartUrl %>">
+              🛒 <%= t('nav.cart') %> <span class="cart-count" style="display:none">0</span>
+            </button>
+          <% } %>
+          <% if (role === 'admin' || role === 'manager') { %>
+            <a href="/admin"><%= t('nav.admin') %></a>
+          <% } %>
+          <span class="user-chip" title="<%= roleLabel(role) %>">
+            <%= currentUser.login %> · <%= roleLabel(role) %>
+          </span>
+          <form action="/logout" method="post" class="inline">
+            <button type="submit" class="btn btn--ghost btn--sm"><%= t('nav.logout') %></button>
+          </form>
+        <% } else { %>
+          <a href="/login" class="btn btn--primary btn--sm"><%= t('nav.login') %></a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+      <%- include('flash') %>

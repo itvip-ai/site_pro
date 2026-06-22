@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#0E411F;--lime:#7FA822;--or:#E87820;--blue:#6AAECC;--nat:#DDE8C0}
+body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;background:#fff;height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--g);flex-shrink:0;flex-wrap:wrap;gap:6px}
+.logo{font-size:14px;font-weight:bold;color:#fff}.logo span{color:var(--nat)}
+.btns{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.kp-inp{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 8px;border-radius:5px;font-size:12px;width:85px}
+.btn{padding:6px 11px;border-radius:5px;font-size:12px;font-weight:bold;cursor:pointer;border:none}
+.btn:hover{opacity:.85}
+.btn-w{background:#fff;color:var(--g)}.btn-lime{background:var(--lime);color:#fff}.btn-or{background:var(--or);color:#fff}.btn-gray{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.lb{padding:5px 10px;border-radius:5px;font-size:11px;font-weight:bold;cursor:pointer;border:1px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.7)}
+.lb.on{background:#fff;color:var(--g);border-color:#fff}
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px;background:#f8f9f5;border-bottom:1px solid #dde3d8}
+.tc{border:2px solid #dde3d8;border-radius:8px;padding:10px 12px;cursor:pointer;position:relative}
+.tc:hover{border-color:var(--lime)}.tc.on-new{border-color:var(--g);background:#EBF4D8}.tc.on-ret{border-color:var(--blue);background:#EBF4FB}
+.tc::after{content:'';position:absolute;top:7px;right:9px;font-size:11px;font-weight:bold;color:var(--lime)}
+.tc.on-new::after,.tc.on-ret::after{content:'✓'}
+.tc-ico{font-size:18px;margin-bottom:3px}.tc-title{font-size:13px;font-weight:bold;margin-bottom:2px}
+.tc-sub{font-size:11px;color:#666;line-height:1.5}
+.tc-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}
+.tc-tag{padding:2px 6px;border-radius:20px;font-size:10px;border:1px solid #dde3d8;color:#888}
+.tc.on-new .tc-tag{border-color:var(--g);color:var(--g)}.tc.on-ret .tc-tag{border-color:var(--blue);color:#0C447C}
+.tabs-bar{display:flex;background:#f0f4ed;border-bottom:1px solid #dde3d8;overflow-x:auto;flex-shrink:0}
+.tab{padding:9px 14px;font-size:12px;font-weight:bold;cursor:pointer;border-bottom:2px solid transparent;color:#888;white-space:nowrap}
+.tab.on{color:var(--g);border-bottom-color:var(--lime)}.tab:hover:not(.on){color:#333}
+.content{flex:1;overflow-y:auto;padding:12px 14px}
+.saved-bar{display:flex;gap:5px;flex-wrap:wrap;padding:6px 14px;background:#fffef0;border-bottom:1px solid #f0e8b0;align-items:center;font-size:11px}
+.stag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:#fff;border:1px solid #dde3d8;border-radius:20px;cursor:pointer;color:#666}
+.stag:hover{border-color:var(--lime);color:var(--g)}
+.stag .sx{color:#aaa;font-size:13px}
+.card{border:1px solid #dde3d8;border-radius:8px;padding:13px;margin-bottom:10px;background:#fff}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.cb{width:3px;height:13px;border-radius:2px;flex-shrink:0}
+.ch h3{font-size:12px;font-weight:bold}.ch .cs{font-size:11px;color:#888}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.fl{display:flex;flex-direction:column;gap:3px}
+.fl label{font-size:11px;color:#666;font-weight:bold}
+.fl input,.fl select,.fl textarea{padding:6px 8px;font-size:12px;border:1px solid #d0d5ca;border-radius:5px;background:#fff;color:#1a1a1a;font-family:Arial,sans-serif}
+.fl input:focus,.fl select:focus,.fl textarea:focus{outline:none;border-color:var(--lime)}
+.fl textarea{resize:vertical;min-height:48px;line-height:1.5}
+/* MANAGERS GROUPED */
+.mgr-group{margin-bottom:14px}
+.mgr-group-hdr{font-size:11px;font-weight:bold;color:var(--g);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;padding:5px 9px;background:#f2f8e6;border-left:3px solid var(--lime);border-radius:0 4px 4px 0}
+.mgr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:7px}
+.mgr-card{border:2px solid #dde3d8;border-radius:8px;padding:8px 6px;cursor:pointer;text-align:center;position:relative}
+.mgr-card:hover{border-color:var(--lime)}.mgr-card.on{border-color:var(--lime);background:#f2f8e6}
+.mgr-card.on::after{content:'✓';position:absolute;top:4px;right:6px;font-size:10px;color:var(--lime);font-weight:bold}
+.mgr-av{width:38px;height:38px;border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;color:#fff}
+.mgr-nm{font-size:11px;font-weight:bold}.mgr-rl{font-size:10px;color:#888;margin-top:1px}
+.rg-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.rg-btn{padding:7px 8px;border:1px solid #dde3d8;border-radius:6px;cursor:pointer;text-align:center;font-size:11.5px;background:#fff;color:#888}
+.rg-btn:hover{border-color:var(--lime)}.rg-btn.on{border-color:var(--lime);background:#f2f8e6;color:#1a1a1a;font-weight:bold}
+.rg-btn .rn{font-weight:bold;margin-bottom:1px}.rg-btn .rc{font-size:10px;color:#888}
+.map-mock{background:#f0f4ed;border:1px solid #dde3d8;border-radius:6px;height:90px;position:relative;overflow:hidden;margin-top:7px;display:flex;align-items:center;justify-content:center}
+.map-pin{position:absolute;font-size:18px;transform:translate(-50%,-100%);transition:all .4s}
+.map-lbl{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:10px;color:#888;background:#fff;padding:2px 7px;border-radius:20px;border:1px solid #dde3d8;white-space:nowrap;max-width:90%}
+/* CASES — реальные проекты с фото (стиль qhub.md) */
+.case-dir-group{margin-bottom:14px;border:1px solid #dde3d8;border-radius:8px;overflow:hidden}
+.case-dir-hdr{padding:9px 13px;background:#f2f8e6;border-bottom:1px solid #dde3d8;font-size:13px;font-weight:bold;color:var(--g);display:flex;align-items:center;gap:8px}
+.case-dir-hdr .ico{font-size:18px}
+.case-dir-items{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+.case-it{border:1.5px solid #dde3d8;border-radius:8px;cursor:pointer;background:#fff;overflow:hidden;position:relative;display:flex;flex-direction:row}
+.case-it:hover{border-color:var(--or)}.case-it.on{border-color:var(--or);background:#fef4ec}
+.case-it.on::after{content:'✓';position:absolute;top:6px;right:8px;width:18px;height:18px;background:var(--or);color:#fff;border-radius:50%;font-size:11px;font-weight:bold;display:flex;align-items:center;justify-content:center;z-index:2}
+.case-it .ci-img{width:90px;flex-shrink:0;background-size:cover;background-position:center;background-color:#f0f4ed;position:relative}
+.case-it .ci-badge{position:absolute;top:5px;left:5px;background:var(--lime);color:#fff;font-size:8px;font-weight:bold;padding:2px 6px;border-radius:20px;letter-spacing:0.04em}
+.case-it .ci-body{padding:8px 10px;flex:1;min-width:0}
+.case-it .ct{font-weight:bold;font-size:12px;color:#1a1a1a;margin-bottom:3px;line-height:1.25}
+.case-it .cs2{font-size:10.5px;color:#666;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* PAINS */
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:5px}
+.pc{display:flex;align-items:flex-start;gap:6px;padding:7px 8px;border:1px solid #dde3d8;border-radius:6px;cursor:pointer;font-size:11.5px;line-height:1.4;color:#888;user-select:none}
+.pc:hover{border-color:var(--lime)}.pc.on{border-color:var(--lime);background:#f2f8e6;color:#1a1a1a}
+.pc .pi{font-size:13px;width:15px;flex-shrink:0}
+.pc .pchk{width:12px;height:12px;border:1.5px solid #ccc;border-radius:3px;flex-shrink:0;margin-top:2px;margin-left:auto;display:flex;align-items:center;justify-content:center}
+.pc.on .pchk{background:var(--lime);border-color:var(--lime)}.pc.on .pchk::after{content:'✓';font-size:9px;color:#fff;font-weight:bold}
+/* CATALOG — bigger and bolder */
+.cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:14px;border-bottom:2px dashed #dde3d8;position:relative}
+.cat-row::after{content:'▾ Товары выбранной категории ▾';position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);background:#fff;color:#7FA822;font-size:10px;font-weight:bold;padding:0 12px;letter-spacing:0.06em}
+.cbt{padding:7px 14px;border:1.5px solid #dde3d8;border-radius:22px;font-size:12px;cursor:pointer;background:#fff;color:#666;font-weight:bold;transition:all .12s}
+.cbt:hover{background:#f2f8e6;border-color:var(--lime);color:var(--g)}
+.cbt.on{background:var(--g);color:#fff;border-color:var(--g);box-shadow:0 1px 3px rgba(14,65,31,.2)}
+.cat-search{width:100%;padding:13px 16px;font-size:14px;font-weight:500;border:2px solid #d63838;border-radius:7px;background:#fff;margin-bottom:10px;font-family:Arial,sans-serif}
+.cat-search:focus{outline:none;border-color:#b71c1c;box-shadow:0 0 0 3px rgba(214,56,56,.18)}
+.cat-items{display:flex;gap:5px;flex-wrap:wrap;max-height:140px;overflow-y:auto;margin-bottom:9px;padding:10px;background:#fafbf7;border:1px solid #eef2e8;border-radius:8px}
+.ci{padding:5px 9px;border:1px solid #dde3d8;border-radius:5px;font-size:11px;cursor:pointer;color:#666;display:flex;align-items:center;gap:6px;background:#fff}
+.ci:hover{border-color:var(--lime);color:#1a1a1a;background:#f8fcf3}
+.ci .cp{color:var(--lime);font-weight:bold;flex-shrink:0}.ci .cm{color:#aaa;font-size:10px;flex-shrink:0}
+.led-block{margin:8px 0 12px;padding:11px 13px;background:#fff8e8;border:1px solid #f5d56d;border-radius:8px}
+.led-title{font-size:11px;font-weight:bold;color:#7a5810;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.tw{overflow-x:auto}
+table.pt{width:100%;border-collapse:collapse;font-size:12px;min-width:500px}
+table.pt th{background:#f0f4ed;font-size:10px;font-weight:bold;color:#888;padding:6px;text-align:left;border-bottom:1px solid #dde3d8;text-transform:uppercase}
+table.pt td{padding:3px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+table.pt td input,table.pt td select{border:1px solid transparent;border-radius:4px;padding:5px;font-size:11.5px;width:100%;background:transparent;font-family:Arial,sans-serif}
+table.pt td input:focus,table.pt td select:focus{border-color:var(--lime);background:#fff;outline:none}
+.sc{font-weight:bold;padding:5px 6px;text-align:right;font-size:12px;color:var(--g)}
+.xbtn{width:20px;height:20px;border:none;background:none;cursor:pointer;color:#ccc;font-size:14px;border-radius:4px}
+.xbtn:hover{background:#fee2e2;color:#e24b4a}
+.add-lnk{margin-top:6px;font-size:11px;color:var(--lime);cursor:pointer;font-weight:bold}
+.disc-row{display:flex;align-items:center;gap:7px;margin-top:7px;padding:7px 10px;background:#f8f9f5;border-radius:6px;border:1px solid #dde3d8;flex-wrap:wrap}
+.disc-row label{font-size:11px;color:#888}
+.disc-row input[type=number]{width:58px;padding:4px 7px;font-size:12px;border:1px solid #d0d5ca;border-radius:5px}
+.tot-box{display:flex;justify-content:space-between;align-items:center;background:#f2f8e6;border:1px solid #c8e090;padding:10px 13px;border-radius:7px;margin-bottom:9px}
+.tot-val{font-size:22px;font-weight:bold;color:var(--g)}
+.info-strip{padding:8px 11px;background:#f8f9f5;border-radius:6px;font-size:11px;color:#888;line-height:1.7;border:1px solid #dde3d8;margin-top:8px}
+.loading{text-align:center;padding:16px;color:#888;font-size:12px}
+.toast{position:fixed;bottom:12px;right:12px;background:var(--g);color:#fff;padding:8px 14px;border-radius:7px;font-size:12px;font-weight:bold;display:none;z-index:999;border-left:4px solid var(--lime)}
+@media print{
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+  html,body{margin:0 !important;padding:0 !important;height:auto !important;display:block !important;background:#fff !important}
+  .topbar,.type-row,.tabs-bar,.btns,#saved-bar,.toast,.loading,#v-client,#v-cases,#v-mgr,#v-goods,#v-cond,#v-list{display:none !important}
+  #v-pv{display:block !important;padding:0 !important;margin:0 !important;border:none !important;box-shadow:none !important}
+  #pv-wrap{border:none !important;border-radius:0 !important;width:100% !important;max-width:100% !important;box-shadow:none !important;padding:8mm !important;box-sizing:border-box !important}
+  /* Убираем headers/footers браузера (URL, дата, заголовок, страница X/Y) */
+  @page{size:A4;margin:0}
+  @page :first{margin:0}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Q<span>GROUP</span> — 📺 LED Конструктор</div>
+  <div class="btns">
+    <input class="kp-inp" id="kp-num" value="КП-001">
+    <div style="display:flex;gap:3px">
+      <button class="btn lb on" id="lb-ru" onclick="setLang('RU')">RU</button>
+      <button class="btn lb" id="lb-ro" onclick="setLang('RO')">RO</button>
+    </div>
+    <button class="btn btn-gray" onclick="syncAllData()" title="Синхронизировать">🔄 Синхронизировать</button>
+    <button class="btn btn-gray" onclick="newKP()">+ Новое</button>
+    <button class="btn btn-w" onclick="saveKP()">💾 Сохранить</button>
+    <button class="btn btn-lime" onclick="switchTab('v-pv')">👁 Превью</button>
+    <button class="btn btn-or" onclick="genPDF()">📄 PDF</button>
+    <button class="btn btn-gray" onclick="google.script.host.close()">✕</button>
+  </div>
+</div>
+
+<div class="saved-bar" id="saved-bar" style="display:none">
+  <span style="color:#888">Сохранённые:</span>
+  <div id="saved-tags" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+</div>
+
+<div class="type-row">
+  <div class="tc on-new" id="tc-new" onclick="setType('new')">
+    <div class="tc-ico">🆕</div><div class="tc-title">Новый клиент</div>
+    <div class="tc-sub">Нужно убедить — кейсы, ценность</div>
+    <div class="tc-tags"><span class="tc-tag">Кейсы</span><span class="tc-tag">Боли</span><span class="tc-tag">Решение</span></div>
+  </div>
+  <div class="tc" id="tc-ret" onclick="setType('ret')">
+    <div class="tc-ico">🔄</div><div class="tc-title">Постоянный клиент</div>
+    <div class="tc-sub">Только позиции и итоговая сумма</div>
+    <div class="tc-tags"><span class="tc-tag">Позиции</span><span class="tc-tag">Скидка</span><span class="tc-tag">Итого</span></div>
+  </div>
+</div>
+
+<div class="tabs-bar" id="tabs-bar"></div>
+
+<div class="content">
+
+<!-- КЛИЕНТ -->
+<div id="v-client" style="display:none">
+<div class="card">
+  <div class="ch"><div class="cb" style="background:var(--lime)"></div><h3>Клиент и объект</h3></div>
+
+  <!-- ТИП ОБЪЕКТА — ПЕРВЫЙ -->
+  <div class="g3" style="margin-bottom:8px">
+    <div class="fl"><label>🏠 Тип объекта</label>
+      <select id="cl_ty" onchange="upd()">
+        <option value="торгового центра">Торговый центр</option>
+        <option value="квартиры">Квартира</option><option value="дома">Частный дом</option>
+        <option value="офиса">Офис</option><option value="дачи">Дача</option>
+        <option value="магазина">Магазин</option><option value="склада">Склад</option>
+        <option value="бизнес-центра">Бизнес-центр</option>
+        <option value="завода">Завод / Производство</option>
+        <option value="школы/лицея">Школа / Лицей</option>
+        <option value="детского сада">Детский сад</option>
+        <option value="госучреждения">Госучреждение</option>
+        <option value="больницы/клиники">Больница / Клиника</option>
+      </select>
+    </div>
+    <div class="fl"><label>🏢 Название компании</label><input id="cl_co" placeholder="SRL Burcovschi (опционально)" oninput="upd()"></div>
+    <div class="fl"><label>👤 ФИО клиента</label><input id="cl_n" placeholder="Андрей Попеску" oninput="upd()"></div>
+  </div>
+
+  <div class="g3" style="margin-bottom:8px">
+    <div class="fl"><label>📞 Телефон</label><input id="cl_ph" placeholder="+373 XX XXX XXX" oninput="upd()"></div>
+    <div class="fl"><label>✉️ Email</label><input id="cl_em" placeholder="email@mail.com" oninput="upd()"></div>
+    <div class="fl"><label>📍 Адрес объекта</label><input id="cl_ad" placeholder="str. Ștefan cel Mare 1, Chișinău" oninput="upd();updateMap()"></div>
+  </div>
+
+  <div class="fl" style="margin-bottom:8px">
+    <label>🌍 Регион (определит контакты офиса в КП)</label>
+    <div class="rg-grid" id="rg-grid"></div>
+    <div class="map-mock">
+      <div class="map-pin" id="map-pin" style="left:50%;top:55%">📍</div>
+      <div class="map-lbl" id="map-lbl">Введите адрес</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="ch" style="margin-bottom:7px"><div class="cb" style="background:var(--or)"></div><h3>Боли клиента</h3><div class="cs">— войдут в текст КП</div></div>
+    <div class="pain-grid" id="pg"></div>
+    <div class="fl" style="margin-top:8px">
+      <label>✏️ Другая проблема клиента (своими словами)</label>
+      <textarea id="custom_pain" placeholder="Например: переживает за сохранность документов в офисе, нужна интеграция с 1С..." oninput="upd()"></textarea>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- КЕЙСЫ — 3 направления -->
+<div id="v-cases" style="display:none">
+<div class="card">
+  <div class="ch"><div class="cb" style="background:var(--or)"></div><h3>Реализованные проекты QGROUP</h3><div class="cs">— выберите подходящие для клиента</div></div>
+  <div id="cases-container"></div>
+</div>
+</div>
+
+<!-- МЕНЕДЖЕР -->
+<div id="v-mgr" style="display:none">
+<div class="card">
+  <div class="ch"><div class="cb" style="background:var(--blue)"></div><h3>Менеджер</h3><div class="cs">— по отделам</div></div>
+  <div id="mgr-groups"></div>
+  <div class="g2" id="mgr-detail" style="display:none;margin-top:10px">
+    <div class="fl"><label>Имя</label><input id="m_name" oninput="upd()"></div>
+    <div class="fl"><label>Должность / Отдел</label><input id="m_role" oninput="upd()"></div>
+    <div class="fl"><label>Телефон</label><input id="m_ph" oninput="upd()"></div>
+    <div class="fl"><label>Email</label><input id="m_em" oninput="upd()"></div>
+  </div>
+</div>
+</div>
+
+<!-- ТОВАРЫ -->
+<div id="v-goods" style="display:none">
+<div class="card">
+  <div class="ch"><div class="cb" style="background:var(--lime)"></div>
+    <h3>Товары и оборудование</h3>
+    <div class="cs">— реальный прайс QGROUP · <span id="cat-count-lbl">загрузка...</span></div>
+  </div>
+  <input class="cat-search" id="cat-search" placeholder="🔍 Поиск по названию или артикулу..." oninput="searchCat()">
+  <div class="cat-row" id="cat-row"></div>
+  <div class="cat-items" id="cat-items"></div>
+
+  <div class="led-block" id="led-block">
+    <div class="led-title">📺 Параметры LED-экрана (попадут в КП)</div>
+    <div class="g4" style="margin-bottom:7px">
+      <div class="fl"><label>Размер (мм)</label><input id="led_size" placeholder="2880x1600" oninput="upd()"></div>
+      <div class="fl"><label>Шаг пикселя</label><input id="led_pitch" placeholder="2,5 мм" oninput="upd()"></div>
+      <div class="fl"><label>Яркость</label><input id="led_bright" placeholder="500 nits" oninput="upd()"></div>
+      <div class="fl"><label>Частота обновления</label><input id="led_freq" placeholder="1920 Hz" oninput="upd()"></div>
+    </div>
+    <div class="g4" style="margin-bottom:7px">
+      <div class="fl"><label>Потребл. мощность</label><input id="led_power" placeholder="829 Вт/ч (max 1.9 кВт)" oninput="upd()"></div>
+      <div class="fl"><label>Рабочая температура</label><input id="led_temp" placeholder="-10° до 40°" oninput="upd()"></div>
+      <div class="fl"><label>Угол обзора</label><input id="led_angle" placeholder="160°/160°" oninput="upd()"></div>
+      <div class="fl"><label>Площадь экрана</label><input id="led_area" placeholder="4,61 м²" oninput="upd()"></div>
+    </div>
+  </div>
+
+  <div class="tw"><table class="pt"><thead><tr>
+    <th style="width:28%">Наименование</th><th style="width:18%">Модель</th>
+    <th style="width:7%">Кол.</th><th style="width:7%">Ед.</th>
+    <th style="width:11%">Цена $</th><th style="width:8%">Скидка%</th>
+    <th style="width:10%">Итого $</th><th style="width:3%"></th>
+  </tr></thead><tbody id="pb"></tbody></table></div>
+  <div class="add-lnk" onclick="addRow()">+ добавить строку вручную</div>
+  <div class="disc-row">
+    <label>Общая скидка клиенту:</label>
+    <input type="number" id="global-disc" value="0" min="0" max="60" onchange="upd()">
+    <label>%</label>
+    <span style="font-size:11px;color:#aaa">— для позиций без индивидуальной скидки</span>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><div class="cb" style="background:var(--or)"></div>
+    <h3>Стоимость работ и услуг</h3>
+    <div class="cs">— монтаж, прокладка, пусконаладка</div>
+  </div>
+  <div class="tw"><table class="pt"><thead><tr>
+    <th style="width:50%">Наименование работы</th><th style="width:10%">Кол.</th>
+    <th style="width:10%">Ед.</th><th style="width:13%">Цена $</th>
+    <th style="width:14%">Сумма $</th><th style="width:3%"></th>
+  </tr></thead><tbody id="wb"></tbody></table></div>
+  <div class="add-lnk" onclick="addWork()">+ добавить работу</div>
+</div>
+</div>
+
+<!-- УСЛОВИЯ -->
+<div id="v-cond" style="display:none">
+<div class="card">
+  <div class="ch"><div class="cb" style="background:var(--lime)"></div><h3>Итого и условия</h3></div>
+  <div class="tot-box">
+    <div><div style="font-size:11px;color:#888">Без скидки</div><div style="font-size:13px;color:#aaa;text-decoration:line-through" id="tot-orig">$0</div></div>
+    <div style="text-align:right"><div style="font-size:11px;color:#888">Итого со скидкой</div><div class="tot-val" id="tot">$0</div></div>
+  </div>
+  <div class="g3" style="margin-bottom:8px">
+    <div class="fl"><label>Срок выполнения</label><input id="c_time" value="3–7 рабочих дней" oninput="upd()"></div>
+    <div class="fl"><label>Условия оплаты</label><input id="c_pay" value="50% предоплата, 50% при сдаче" oninput="upd()"></div>
+    <div class="fl"><label>Статус КП</label>
+      <select id="c_st"><option>Отправлено</option><option>В работе</option><option>Принято</option><option>Отказ</option></select>
+    </div>
+  </div>
+  <div class="fl" style="margin-bottom:8px"><label>Примечание</label><textarea id="c_note" oninput="upd()"></textarea></div>
+  <div class="g3" style="margin-bottom:8px">
+    <div class="fl"><label>⏱ Действие цен</label><input id="c_validity" value="48 часов" oninput="upd()"></div>
+    <div class="fl"><label>🔒 Конфиденциальность</label><input id="c_conf" value="Конфиденциально" oninput="upd()"></div>
+    <div class="fl"><label>🛡 Гарантия</label><input id="c_warr" value="Гарантия Hikvision 3 года" oninput="upd()"></div>
+  </div>
+  <div class="fl" style="margin-top:14px"><label>✅ Что включено в цену (отметь нужные пункты, можно редактировать)</label>
+    <div id="inc-list" style="background:#f8fafa;border:1px solid #dde3d8;border-radius:8px;padding:8px"></div>
+  </div>
+</div>
+</div>
+
+<div id="v-pv" style="display:none">
+  <div id="pv-wrap" style="border:1px solid #dde3d8;border-radius:8px;overflow:hidden"></div>
+</div>
+
+<div id="v-list" style="display:none">
+  <div id="list-body"><div class="loading">Загрузка...</div></div>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var LANG=(window.__SITE_LANG__||'RU'), KP_TYPE='new', selMgr=0, selRegion='center', catActive='Камеры';
+var rows=[], works=[], kpList=[], kpN=1, selCases={};
+var USER_CTX={email:"",role:"guest",name:"",company:"",dept:""};
+// Список "Что включено в цену" - редактируемые пункты с чекбоксами
+var DEFAULT_INCLUDED = [
+  {on:true,  ru:'Проектирование',  ro:'Proiectare', descRU:'Техническое решение, расчёт нагрузок, схема монтажа, адаптация под объект.', descRO:'Soluție tehnică, calculul sarcinilor, schemă de montaj, adaptare la obiect.'},
+  {on:true,  ru:'Поставка',         ro:'Aprovizionare', descRU:'Оригинальное оборудование Hikvision со склада в Кишинёве — без задержек.', descRO:'Echipament Hikvision original de pe stoc în Chișinău — fără întârzieri.'},
+  {on:true,  ru:'Монтаж',           ro:'Montare', descRU:'Установка, прокладка кабелей, подключение, аккуратная финишная отделка.', descRO:'Instalare, pozarea cablurilor, conectare, finisare îngrijită.'},
+  {on:true,  ru:'Пусконаладка',     ro:'Configurare', descRU:'Настройка, тестирование системы, обучение персонала работе с оборудованием.', descRO:'Setarea, testarea sistemului, instruirea personalului.'},
+  {on:true,  ru:'Гарантия',         ro:'Garanție', descRU:'3 года гарантии Hikvision + собственный сервисный центр QGROUP.', descRO:'3 ani garanție Hikvision + centru de service propriu QGROUP.'}
+];
+var includedItems = JSON.parse(JSON.stringify(DEFAULT_INCLUDED));
+var CAT_SHEET=null;
+
+var CAT_DEFAULT={
+  "Камеры":[
+    {n:"Камера 4Мп AcuSense",m:"DS-2CD2443G0E-I",p:88},
+    {n:"Камера 4Мп ColorVu 3.0",m:"DS-2CD1047G3-LIUF",p:89}
+  ],
+  "NVR":[{n:"NVR 8-кан.",m:"DS-7608NXI-K1",p:129}],
+  "СКУД":[{n:"Терминал биометрия",m:"DS-K1T200EF-C",p:50}],
+  "Домофон":[{n:"Панель Mifare",m:"DS-KV6113-PE1",p:110}]
+};
+var CAT=CAT_DEFAULT;
+
+var REGIONS=[
+  {key:'center',ru:'Центр',ro:'Centru',cities:'str. Alexandru Hâjdeu 68, Chișinău',pin:{l:'50%',t:'55%'}},
+  {key:'north',ru:'Север',ro:'Nord',cities:'str. M. Viteazul 65, Bălți',pin:{l:'35%',t:'30%'}},
+  {key:'south',ru:'Юг',ro:'Sud',cities:'str. Fedico 39, Comrat',pin:{l:'46%',t:'78%'}}
+];
+
+// Контакты по регионам — отредактируйте под реальные адреса филиалов
+var CONTACTS_BY_REGION={
+  center:{name:'Центральный офис · Chișinău',addr:'Mun. Chișinău, str. Alexandru Hâjdeu 68',ph:'+373 79 885 000',em:'info@qgroup.md'},
+  north: {name:'Филиал Север · Bălți',         addr:'or. Bălți, str. M. Viteazul 65',        ph:'+373 79 885 000',em:'info@qgroup.md'},
+  south: {name:'Филиал Юг · Comrat',            addr:'or. Comrat, str. Fedico 39',            ph:'+373 79 885 000',em:'info@qgroup.md'}
+};
+
+var MGRS_DEFAULT=[
+  {id:0,name:'Александр Иванов',role:'B2B',ph:'+373 79 885 000',em:'a.ivanov@qgroup.md',color:'#0E411F',init:'АИ'},
+  {id:1,name:'Мария Попеску',role:'B2C',ph:'+373 69 333 444',em:'m.popesku@qgroup.md',color:'#7FA822',init:'МП'},
+  {id:2,name:'Дмитрий Лупу',role:'Инженеры',ph:'+373 69 555 666',em:'d.lupu@qgroup.md',color:'#E87820',init:'ДЛ'},
+  {id:3,name:'Elena Rusu',role:'Vânzări',ph:'+373 69 777 888',em:'e.rusu@qgroup.md',color:'#6AAECC',init:'ER'}
+];
+var MGRS=MGRS_DEFAULT;
+
+// КЕЙСЫ — реальные проекты с qhub.md/history (фото + ссылки + бейджи)
+var CASES_GROUPS=[
+  {
+    id:'led', titleRU:'LED-экраны', titleRO:'LED Ecrane', ico:'📺',
+    cases:[
+      {id:'digital_l', badge:'INTERIOR',
+        ru:'Digital Park — конференц-зал',
+        ro:'Digital Park — sala de conferință',
+        subRU:'Интерьерный LED-экран в конференц-зале хаба Digital Park (Кишинёв). Высокая чёткость для презентаций и корпоративных мероприятий.',
+        subRO:'Ecran LED de interior în sala de conferințe a hubului Digital Park. Calitate vizuală excepțională pentru prezentări și evenimente corporate.',
+        img:'https://qhub.md/upload/iblock/8e6/ubke1iurftcho2qj56ljp94r8on8o3zs/digital_park-_1_.png',
+        url:'https://qhub.md/history/led-ecrane/ecran-led-pentru-sala-de-conferinta-digital-park/'},
+      {id:'nero_l', badge:'INTERIOR',
+        ru:'NERO — цифровая витрина магазина',
+        ro:'NERO — vitrină digitală magazin',
+        subRU:'Цифровая витрина для магазина NERO в Кишинёве — динамическая реклама, привлечение внимания прохожих.',
+        subRO:'Vitrină digitală pentru magazinul NERO din Chișinău — publicitate dinamică, atragerea atenției trecătorilor.',
+        img:'https://qhub.md/upload/iblock/f58/5ydki41zucy34p7v0lm743aickos5jz4/NERO.png',
+        url:'https://qhub.md/history/led-ecrane/vitrina-digitala-pentru-magazinul-nero-din-chisinau/'},
+      {id:'multisport_l', badge:'INTERIOR',
+        ru:'Multisport MallDova',
+        ro:'Multisport în MallDova',
+        subRU:'Усиление витрины магазина Multisport в MallDova LED-экраном — повышает узнаваемость бренда и динамично представляет новые коллекции.',
+        subRO:'Consolidarea vitrinei Multisport din MallDova cu ecran LED — sporește vizibilitatea brandului și prezintă dinamic colecțiile noi.',
+        img:'https://qhub.md/upload/iblock/be8/0zjpx2lgme2trqop0pt2xstzyjf55rfa/multisport.png',
+        url:'https://qhub.md/history/led-ecrane/consolidarea-vitrinei-magazinului-ecran-led-pentru-multisport-n-malldova/'},
+      {id:'pereflex_l', badge:'EXTERIOR',
+        ru:'Pereflex — наружный экран на фасаде',
+        ro:'Pereflex — fațadă publicitară LED',
+        subRU:'Уличный LED-экран превратил фасад Pereflex в рекламную витрину с максимальной яркостью и устойчивостью к погодным условиям.',
+        subRO:'Un ecran LED de exterior a transformat fațada Pereflex într-o vitrină publicitară cu luminozitate maximă și rezistență la condițiile meteo.',
+        img:'https://qhub.md/upload/iblock/7c9/cs1vlksic1n7gkcjb9fy86hu1hbhz7kd/Dizayn-bez-nazvaniya.png',
+        url:'https://qhub.md/history/led-ecrane/cum-a-transformat-un-ecran-led-de-exterior-fatada-pereflex-intro-vitrina-publicitara/'},
+      {id:'plitka_l', badge:'INTERIOR',
+        ru:'Plitka.md — шоурум керамики',
+        ro:'Plitka.md — showroom ceramică',
+        subRU:'Интерьерный LED-экран в шоуруме керамики Plitka.md — динамичная подача коллекций, премиум-атмосфера для клиентов.',
+        subRO:'Ecran LED de interior în showroom-ul de ceramică Plitka.md — prezentare dinamică a colecțiilor, atmosferă premium.',
+        img:'https://qhub.md/upload/iblock/be1/i9ne3xp1f6blou81oss01cw484clbno3/Dizayn-bez-nazvaniya-_2_.png',
+        url:'https://qhub.md/history/led-ecrane/cum-a-transformat-un-ecran-led-interiorul-showroom-ului-de-ceramic-plitka-md/'},
+      {id:'babyliss_l', badge:'INTERIOR',
+        ru:'BabyLiss — LED для магазина',
+        ro:'BabyLiss — LED pentru magazin',
+        subRU:'Инновационное LED-решение для магазина BabyLiss — максимальная видимость бренда и привлекательная подача продукции.',
+        subRO:'Soluție LED inovatoare pentru magazinul BabyLiss — vizibilitate maximă a brandului și prezentare atractivă a produselor.',
+        img:'https://qhub.md/upload/resize_cache/iblock/2e3/qdpl9x5k0y79z9j0ct4f9g9dyx9s41vp/570_369_0/babiliss-.png',
+        url:'https://qhub.md/history/led-ecrane/vizibilitate-maxim-pentru-brand-solu-ie-led-inovatoare-pentru-magazinul-babyliss/'}
+    ]
+  }
+];
+
+var PAINS=[
+  {i:"🚪",ru:"Боюсь кражи / взлома",ro:"Mă tem de furt",s:"Камера + сигнализация",sRO:"Cameră + alarmă"},
+  {i:"📦",ru:"Крадут посылки",ro:"Se fură colete",s:"IP-домофон с записью",sRO:"Interfon IP cu înregistrare"},
+  {i:"👶",ru:"Дети одни дома",ro:"Copiii singuri acasă",s:"Wi-Fi камера онлайн",sRO:"Cameră Wi-Fi online"},
+  {i:"👵",ru:"Пожилые родители",ro:"Părinți în vârstă",s:"IP-камера + SOS",sRO:"Cameră IP + SOS"},
+  {i:"🏡",ru:"Дача без присмотра",ro:"Casă de vacanță",s:"Камеры + датчики",sRO:"Camere + senzori"},
+  {i:"🔥",ru:"Боюсь пожара / газа",ro:"Incendiu / gaz",s:"Датчики AX PRO",sRO:"Senzori AX PRO"},
+  {i:"🚗",ru:"Гараж — угон",ro:"Garaj / furt",s:"Камера ANPR",sRO:"Cameră ANPR"},
+  {i:"🔑",ru:"Нет контроля ключей",ro:"Prea multe chei",s:"СКУД биометрия",sRO:"Control acces biometric"},
+  {i:"🌑",ru:"Темно у входа",ro:"Întuneric la intrare",s:"Камера ColorVu",sRO:"Cameră ColorVu"},
+  {i:"📵",ru:"Не открыть дверь удалённо",ro:"Nu pot deschide ușa",s:"IP-домофон",sRO:"Interfon IP"},
+  {i:"💧",ru:"Боюсь затопления",ro:"Inundație",s:"Датчик воды",sRO:"Senzor de apă"},
+  {i:"🏢",ru:"Контроль офиса",ro:"Control birou",s:"Видеонаблюдение + СКУД",sRO:"Supraveghere + control acces"}
+];
+
+var TABS_NEW=['v-client','v-cases','v-mgr','v-goods','v-cond','v-pv','v-list'];
+var TABS_RET=['v-client','v-mgr','v-goods','v-cond','v-pv','v-list'];
+var TAB_LABELS={'v-client':{RU:'📍 Клиент',RO:'📍 Client'},'v-cases':{RU:'🏆 Кейсы',RO:'🏆 Cazuri'},'v-mgr':{RU:'👤 Менеджер',RO:'👤 Manager'},'v-goods':{RU:'🛒 Товары',RO:'🛒 Produse'},'v-cond':{RU:'⚙️ Условия',RO:'⚙️ Condiții'},'v-pv':{RU:'👁 Превью',RO:'👁 Preview'},'v-list':{RU:'📊 Все КП',RO:'📊 Toate'}};
+var curTab='v-client';
+
+google.script.run.withSuccessHandler(function(mgrs){
+  if(mgrs&&mgrs.length){
+    MGRS=mgrs;
+    // Авто-выбор себя по email залогиненного пользователя
+    google.script.run.withSuccessHandler(function(myMgr){
+      if(myMgr){
+        var emailLow=String(myMgr.em||'').toLowerCase();
+        for(var i=0;i<MGRS.length;i++){
+          if(String(MGRS[i].em||'').toLowerCase()===emailLow){selMgr=MGRS[i].id;break;}
+        }
+      }
+      initMgrs();
+    }).getMyManagerByEmail();
+  }
+}).getManagers();
+function loadCatalog(){
+google.script.run.withSuccessHandler(function(cat){
+  if(cat&&cat.length){
+    CAT_SHEET=cat;
+    var grouped={};
+    cat.forEach(function(item){
+      var c=item.category||'Прочее';
+      if(!grouped[c])grouped[c]=[];
+      grouped[c].push({n:item.name,m:item.code,p:item.price,desc:item.desc||'',img:item.img||'',thumb:item.thumb||item.img||''});
+    });
+    CAT_DEFAULT=grouped;
+    if(!catActive||!grouped[catActive])catActive=Object.keys(grouped)[0]||'Прочее';
+    var byCode={};cat.forEach(function(it){byCode[String(it.code)]=it;});
+    if(typeof rows!=='undefined'&&rows.length){rows.forEach(function(r){var it=byCode[String(r.m)];if(it){r.n=it.name;r.desc=it.desc||'';}});if(typeof renderRows==='function')renderRows();}
+    initCat();
+    document.getElementById('cat-count-lbl').textContent=cat.length+' позиций · '+Object.keys(grouped).length+' категорий';
+  } else {
+    document.getElementById('cat-count-lbl').textContent='стандартный каталог';
+  }
+}).getCatalogLED(LANG);
+}
+google.script.run.withSuccessHandler(function(list){
+  kpList=list||[];
+  var maxN=0;
+  kpList.forEach(function(kp){
+    var m=String(kp.num||'').match(/(\d+)/);
+    if(m){var n=parseInt(m[1],10);if(n>maxN)maxN=n;}
+  });
+  if(maxN>0){
+    kpN=maxN;
+    sv('kp-num','КП-'+String(maxN+1).padStart(3,'0'));
+  }
+  renderSaved();
+}).getKPs_LED();
+
+function syncAllData(){
+  toast('🔄 Синхронизация...');
+  google.script.run.withSuccessHandler(function(res){
+    if(res.success){
+      toast('✅ Загружено '+res.productsCount+' товаров из '+res.sheetsCount+' листов');
+      google.script.run.withSuccessHandler(function(cat){
+        if(cat&&cat.length){
+          CAT_SHEET=cat;
+          var grouped={};
+          cat.forEach(function(item){
+            var c=item.category||'Прочее';
+            if(!grouped[c])grouped[c]=[];
+            grouped[c].push({n:item.name,m:item.code,p:item.price,desc:item.desc||'',img:item.img||'',thumb:item.thumb||item.img||''});
+          });
+          CAT_DEFAULT=grouped;
+          catActive=Object.keys(grouped)[0]||'Прочее';
+          document.getElementById('cat-count-lbl').textContent=cat.length+' позиций · '+Object.keys(grouped).length+' категорий';
+          initCat();
+        }
+      }).getCatalogLED();
+      google.script.run.withSuccessHandler(function(mgrs){if(mgrs&&mgrs.length){MGRS=mgrs;initMgrs();}}).getManagers();
+    } else toast('❌ '+(res.error||'Ошибка'));
+  }).withFailureHandler(function(e){toast('❌ '+e.message);}).syncAll();
+}
+
+function setType(t){KP_TYPE=t;document.getElementById('tc-new').className='tc'+(t==='new'?' on-new':'');document.getElementById('tc-ret').className='tc'+(t==='ret'?' on-ret':'');buildTabs();switchTab('v-client');upd();}
+function buildTabs(){var tabs=KP_TYPE==='new'?TABS_NEW:TABS_RET;var bar=document.getElementById('tabs-bar');bar.innerHTML='';tabs.forEach(function(id){var b=document.createElement('div');b.className='tab'+(id===curTab?' on':'');b.textContent=TAB_LABELS[id][LANG];b.onclick=function(){switchTab(id);};bar.appendChild(b);});}
+function switchTab(id){curTab=id;['v-client','v-cases','v-mgr','v-goods','v-cond','v-pv','v-list'].forEach(function(vid){document.getElementById(vid).style.display='none';});document.getElementById(id).style.display='block';var tr=document.querySelector('.type-row');if(tr)tr.style.display=(id==='v-pv'||id==='v-list')?'none':'grid';buildTabs();if(id==='v-pv')renderPV();if(id==='v-list')renderList();}
+function setLang(l){LANG=l;document.getElementById('lb-ru').classList.toggle('on',l==='RU');document.getElementById('lb-ro').classList.toggle('on',l==='RO');document.querySelectorAll('#pg .pc').forEach(function(el,i){var s=el.querySelectorAll('span')[1];if(s)s.textContent=PAINS[i][l==='RU'?'ru':'ro'];});buildTabs();initCases();renderIncluded();upd();if(typeof loadCatalog==='function')loadCatalog();}
+function initRegions(){var g=document.getElementById('rg-grid');g.innerHTML='';REGIONS.forEach(function(r){var d=document.createElement('div');d.className='rg-btn'+(r.key===selRegion?' on':'');d.innerHTML='<div class="rn">'+(LANG==='RU'?r.ru:r.ro)+'</div><div class="rc">'+r.cities+'</div>';d.onclick=function(){selRegion=r.key;document.querySelectorAll('.rg-btn').forEach(function(x){x.classList.remove('on');});d.classList.add('on');updateMap();upd();};g.appendChild(d);});}
+function updateMap(){var addr=g('cl_ad');var reg=REGIONS.find(function(r){return r.key===selRegion;})||REGIONS[0];document.getElementById('map-pin').style.left=reg.pin.l;document.getElementById('map-pin').style.top=reg.pin.t;document.getElementById('map-lbl').textContent=addr?addr.substring(0,44)+(addr.length>44?'…':''):(LANG==='RU'?reg.ru:reg.ro)+' — '+reg.cities;}
+
+// Менеджеры — группировка по отделам
+function initMgrs(){
+  var container=document.getElementById('mgr-groups');container.innerHTML='';
+  var groups={};
+  MGRS.forEach(function(m,i){
+    m.id=i;
+    var role=m.role||'Прочее';
+    if(!groups[role])groups[role]=[];
+    groups[role].push(m);
+  });
+  Object.keys(groups).sort().forEach(function(role){
+    var grp=document.createElement('div');grp.className='mgr-group';
+    var hdr=document.createElement('div');hdr.className='mgr-group-hdr';hdr.textContent=role;
+    grp.appendChild(hdr);
+    var grid=document.createElement('div');grid.className='mgr-grid';
+    groups[role].sort(function(a,b){return a.name.localeCompare(b.name);}).forEach(function(m){
+      var d=document.createElement('div');d.className='mgr-card'+(m.id===selMgr?' on':'');
+      d.innerHTML='<div class="mgr-av" style="background:'+(m.color||'#0E411F')+'">'+m.init+'</div><div class="mgr-nm">'+m.name+'</div><div class="mgr-rl">'+m.role+'</div>';
+      d.onclick=function(){selMgr=m.id;document.querySelectorAll('.mgr-card').forEach(function(x){x.classList.remove('on');});d.classList.add('on');fillMgr(m);upd();};
+      grid.appendChild(d);
+    });
+    grp.appendChild(grid);
+    container.appendChild(grp);
+  });
+  fillMgr(MGRS[selMgr]||MGRS[0]);
+}
+function fillMgr(m){sv('m_name',m.name);sv('m_role',m.role);sv('m_ph',m.ph);sv('m_em',m.em);document.getElementById('mgr-detail').style.display='grid';}
+
+// Кейсы — реальные проекты с фото
+function initCases(){
+  var c=document.getElementById('cases-container');c.innerHTML='';
+  CASES_GROUPS.forEach(function(grp){
+    var dirEl=document.createElement('div');dirEl.className='case-dir-group';
+    var hdr=document.createElement('div');hdr.className='case-dir-hdr';
+    hdr.innerHTML='<span class="ico">'+grp.ico+'</span>'+(LANG==='RU'?grp.titleRU:grp.titleRO);
+    dirEl.appendChild(hdr);
+    var items=document.createElement('div');items.className='case-dir-items';
+    grp.cases.forEach(function(cs){
+      var d=document.createElement('div');d.className='case-it'+(selCases[cs.id]?' on':'');
+      var title=LANG==='RU'?cs.ru:cs.ro;
+      var subtitle=LANG==='RU'?cs.subRU:cs.subRO;
+      var html='<div class="ci-img" style="background-image:url(\''+cs.img+'\')">';
+      if(cs.badge)html+='<div class="ci-badge">'+cs.badge+'</div>';
+      html+='</div>';
+      html+='<div class="ci-body"><div class="ct">'+ex2(title)+'</div><div class="cs2">'+ex2(subtitle)+'</div></div>';
+      d.innerHTML=html;
+      d.onclick=function(){
+        if(selCases[cs.id])delete selCases[cs.id];else selCases[cs.id]=true;
+        d.classList.toggle('on',!!selCases[cs.id]);
+      };
+      items.appendChild(d);
+    });
+    dirEl.appendChild(items);
+    c.appendChild(dirEl);
+  });
+}
+
+function initPains(){var g=document.getElementById('pg');PAINS.forEach(function(p,i){var d=document.createElement('div');d.className='pc';d.id='p'+i;d.innerHTML='<span class="pi">'+p.i+'</span><span style="flex:1">'+(LANG==='RU'?p.ru:p.ro)+'</span><span class="pchk"></span>';d.onclick=function(){d.classList.toggle('on');};g.appendChild(d);});}
+
+function isLEDCategory(c){return c&&(c.toLowerCase().indexOf('led')>=0||c.toLowerCase().indexOf('лед')>=0||c.toLowerCase().indexOf('экран')>=0);}
+function initCat(){
+  var cr=document.getElementById('cat-row');cr.innerHTML='';
+  Object.keys(CAT_DEFAULT).forEach(function(c){
+    var b=document.createElement('button');b.className='cbt'+(c===catActive?' on':'');b.textContent=c;
+    b.onclick=function(){
+      catActive=c;
+      document.querySelectorAll('.cbt').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      document.getElementById('cat-search').value='';
+      renderCatItems(CAT_DEFAULT[c]||[]);
+    };
+    cr.appendChild(b);
+  });
+  renderCatItems(CAT_DEFAULT[catActive]||[]);
+}
+function renderCatItems(items){var ci=document.getElementById('cat-items');ci.innerHTML='';(items||[]).forEach(function(item){var d=document.createElement('div');d.className='ci';var im=item.thumb||item.img||'';d.innerHTML=(im?'<img src="'+im+'" loading="lazy" style="width:26px;height:26px;object-fit:contain;border:1px solid #e6ece0;border-radius:4px;background:#fff;margin-right:6px;flex:none">':'')+'<span style="flex:1;font-size:11px">'+ex2(item.n)+'</span><span class="cm">'+ex2(item.m)+'</span><span class="cp">$'+item.p+'</span>';d.onclick=function(){rows.push({n:item.n,m:item.m,q:'1',u:'шт.',p:String(item.p),d:'',s:item.p,desc:item.desc||'',descOpen:false,img:item.img||item.thumb||''});renderRows();upd();};ci.appendChild(d);});}
+function searchCat(){var q=document.getElementById('cat-search').value.toLowerCase().trim();if(!q){renderCatItems(CAT_DEFAULT[catActive]||[]);return;}var all=[];Object.values(CAT_DEFAULT).forEach(function(items){items.forEach(function(i){if(i.n.toLowerCase().indexOf(q)>=0||i.m.toLowerCase().indexOf(q)>=0)all.push(i);});});renderCatItems(all.slice(0,40));}
+
+function addRow(){rows.push({n:'',m:'',q:'1',u:'шт.',p:'',d:'',s:0,img:''});renderRows();}
+function renderRows(){var b=document.getElementById('pb');b.innerHTML='';var gd=parseFloat(g('global-disc'))||0;rows.forEach(function(r,i){var dv=r.d!==''?parseFloat(r.d)||0:gd;var p=parseFloat(r.p)||0;var q=parseFloat(r.q)||0;rows[i].s=Math.round(p*q*(1-dv/100)*100)/100;var hasDesc=r.desc&&r.desc.length>0;var descBtnTxt=hasDesc?(r.descOpen?'📝 ▲':'📝'):'+ описание';var tr=document.createElement('tr');tr.innerHTML='<td><div style="display:flex;gap:4px;align-items:center">'+(r.img?'<img src="'+r.img+'" style="width:24px;height:24px;object-fit:contain;border:1px solid #e6ece0;border-radius:4px;background:#fff;flex:none">':'')+'<input value="'+ex(r.n)+'" placeholder="Наименование" onchange="rows['+i+'].n=this.value;upd()" style="flex:1"><button type="button" class="xbtn" onclick="toggleDesc('+i+')" style="font-size:10px;width:auto;padding:0 6px;background:'+(hasDesc?'#7FA822':'#bbb')+'" title="Описание товара">'+descBtnTxt+'</button></div></td><td><input value="'+ex(r.m)+'" placeholder="Артикул" onchange="rows['+i+'].m=this.value;upd()"></td><td><input value="'+ex(r.q)+'" style="text-align:center" onchange="rows['+i+'].q=this.value;cr('+i+')"></td><td><select onchange="rows['+i+'].u=this.value">'+['шт.','м','компл.','услуга'].map(function(u){return'<option'+(r.u===u?' selected':'')+'>'+u+'</option>';}).join('')+'</select></td><td><input value="'+ex(r.p)+'" style="text-align:right" onchange="rows['+i+'].p=this.value;cr('+i+')"></td><td><input value="'+ex(r.d)+'" placeholder="'+gd+'" style="text-align:center" onchange="rows['+i+'].d=this.value;cr('+i+')"></td><td class="sc">'+(rows[i].s?rows[i].s:'')+'</td><td><button class="xbtn" onclick="rows.splice('+i+',1);renderRows();upd()">×</button></td>';b.appendChild(tr);if(r.descOpen){var trD=document.createElement('tr');trD.innerHTML='<td colspan="8" style="background:#fafbf7;padding:8px"><textarea placeholder="Описание товара (показывается в КП если открыто)" onchange="rows['+i+'].desc=this.value" style="width:100%;min-height:60px;padding:8px;border:1px solid #dde3d8;border-radius:6px;font-size:11.5px;font-family:inherit;resize:vertical">'+ex2(r.desc||'')+'</textarea><div style="font-size:10px;color:#888;margin-top:4px">💡 Описание будет включено в КП клиенту. Можешь редактировать.</div></td>';b.appendChild(trD);}});}
+function toggleDesc(i){rows[i].descOpen=!rows[i].descOpen;renderRows();}
+function cr(i){var gd=parseFloat(g('global-disc'))||0;var dv=rows[i].d!==''?parseFloat(rows[i].d)||0:gd;rows[i].s=Math.round((parseFloat(rows[i].p)||0)*(parseFloat(rows[i].q)||0)*(1-dv/100)*100)/100;renderRows();upd();}
+
+function addWork(){works.push({n:'',q:'1',u:'услуга',p:'',s:0});renderWorks();}
+function renderWorks(){var b=document.getElementById('wb');b.innerHTML='';works.forEach(function(w,i){var p=parseFloat(w.p)||0;var q=parseFloat(w.q)||0;works[i].s=Math.round(p*q*100)/100;var tr=document.createElement('tr');tr.innerHTML='<td><input value="'+ex(w.n)+'" placeholder="Например: Монтаж камер" onchange="works['+i+'].n=this.value;upd()"></td><td><input value="'+ex(w.q)+'" style="text-align:center" onchange="works['+i+'].q=this.value;wr('+i+')"></td><td><select onchange="works['+i+'].u=this.value">'+['услуга','шт.','м','час','компл.'].map(function(u){return'<option'+(w.u===u?' selected':'')+'>'+u+'</option>';}).join('')+'</select></td><td><input value="'+ex(w.p)+'" style="text-align:right" onchange="works['+i+'].p=this.value;wr('+i+')"></td><td class="sc">'+(works[i].s?works[i].s:'')+'</td><td><button class="xbtn" onclick="works.splice('+i+',1);renderWorks();upd()">×</button></td>';b.appendChild(tr);});}
+function wr(i){var p=parseFloat(works[i].p)||0;var q=parseFloat(works[i].q)||0;works[i].s=Math.round(p*q*100)/100;renderWorks();upd();}
+
+function totO(){var t=rows.reduce(function(a,r){return a+(parseFloat(r.p)||0)*(parseFloat(r.q)||0);},0);var w=works.reduce(function(a,wk){return a+(wk.s||0);},0);return Math.round((t+w)*100)/100;}
+function totD(){var t=rows.reduce(function(a,r){return a+(r.s||0);},0);var w=works.reduce(function(a,wk){return a+(wk.s||0);},0);return Math.round((t+w)*100)/100;}
+function totWorks(){return Math.round(works.reduce(function(a,w){return a+(w.s||0);},0)*100)/100;}
+function ap(){return PAINS.filter(function(_,i){var e=document.getElementById('p'+i);return e&&e.classList.contains('on');});}
+function upd(){renderRows();renderWorks();document.getElementById('tot-orig').textContent='$'+totO().toFixed(0);document.getElementById('tot').textContent='$'+totD().toFixed(0);}
+function renderIncluded(){
+  var c=document.getElementById('inc-list');if(!c)return;
+  c.innerHTML='';
+  includedItems.forEach(function(it,i){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:8px;align-items:flex-start;padding:7px 6px;border-bottom:1px solid #eef2e8';
+    row.innerHTML=
+      '<input type="checkbox" '+(it.on?'checked':'')+' onchange="includedItems['+i+'].on=this.checked" style="margin-top:8px;width:18px;height:18px;cursor:pointer">'+
+      '<div style="flex:1;display:grid;grid-template-columns:140px 1fr;gap:6px;align-items:center">'+
+        '<input value="'+ex(LANG==="RU"?it.ru:it.ro)+'" placeholder="Название" onchange="includedItems['+i+'][LANG===\'RU\'?\'ru\':\'ro\']=this.value" style="padding:6px 8px;border:1px solid #dde3d8;border-radius:5px;font-weight:bold;font-size:12px">'+
+        '<input value="'+ex(LANG==="RU"?it.descRU:it.descRO)+'" placeholder="Описание пункта" onchange="includedItems['+i+'][LANG===\'RU\'?\'descRU\':\'descRO\']=this.value" style="padding:6px 8px;border:1px solid #dde3d8;border-radius:5px;font-size:11.5px">'+
+      '</div>';
+    c.appendChild(row);
+  });
+}
+function g(id){var el=document.getElementById(id);return el?el.value:'';}
+function sv(id,val){var el=document.getElementById(id);if(el&&val!==undefined)el.value=val;}
+function ex(s){return(s||'').replace(/"/g,'&quot;');}
+function ex2(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+
+function getLEDParams(){return{size:g('led_size'),pitch:g('led_pitch'),bright:g('led_bright'),freq:g('led_freq'),power:g('led_power'),temp:g('led_temp'),angle:g('led_angle'),area:g('led_area')};}
+function hasLEDParams(){var p=getLEDParams();return p.size||p.pitch||p.bright||p.freq||p.power||p.temp||p.angle||p.area;}
+
+function getState(){
+  return{num:g('kp-num'),lang:LANG,type:KP_TYPE,selMgr:selMgr,selRegion:selRegion,
+    cl_n:g('cl_n'),cl_co:g('cl_co'),cl_ph:g('cl_ph'),cl_em:g('cl_em'),cl_ad:g('cl_ad'),cl_ty:g('cl_ty'),
+    m_name:g('m_name'),m_role:g('m_role'),m_ph:g('m_ph'),m_em:g('m_em'),
+    pains:PAINS.map(function(_,i){var e=document.getElementById('p'+i);return e&&e.classList.contains('on');}),
+    custom_pain:g('custom_pain'),
+    selCases:JSON.parse(JSON.stringify(selCases)),
+    rows:JSON.parse(JSON.stringify(rows)),
+    works:JSON.parse(JSON.stringify(works)),
+    led:getLEDParams(),
+    globalDisc:g('global-disc'),
+    c_time:g('c_time'),c_pay:g('c_pay'),c_st:g('c_st'),c_note:g('c_note'),
+    c_validity:g('c_validity'),c_conf:g('c_conf'),c_warr:g('c_warr'),
+    includedItems:includedItems,
+    total:'$'+totD().toFixed(0),totalOrig:'$'+totO().toFixed(0),
+    date:new Date().toLocaleDateString('ru-RU')};
+}
+
+function saveKP(){var data=getState();toast('Сохраняем...');google.script.run.withSuccessHandler(function(res){if(res.success){toast('✅ КП сохранено!');google.script.run.withSuccessHandler(function(list){kpList=list||[];renderSaved();}).getKPs_LED();}else toast('❌ Ошибка');}).withFailureHandler(function(e){toast('❌ '+e.message);}).saveKP_LED(data);}
+
+function genPDF(){renderPV();switchTab("v-pv");setTimeout(function(){window.print();},300);}
+
+function renderSaved(){
+  var bar=document.getElementById('saved-bar'),tags=document.getElementById('saved-tags');
+  tags.innerHTML='';
+  if(!kpList||!kpList.length){bar.style.display='none';return;}
+  bar.style.display='flex';
+  kpList.slice(0,8).forEach(function(kp){
+    var d=document.createElement('div');d.className='stag';
+    var label=document.createElement('span');
+    label.textContent=(kp.num||'')+(kp.name?' · '+kp.name:'');
+    var x=document.createElement('span');x.className='sx';x.textContent='×';
+    x.onclick=function(e){e.stopPropagation();delKP(kp.num);};
+    d.appendChild(label);d.appendChild(x);
+    d.onclick=function(){if(kp.state)loadKP(kp.state);};
+    tags.appendChild(d);
+  });
+}
+
+function loadKP(st){
+  sv('kp-num',st.num);sv('cl_n',st.cl_n);sv('cl_co',st.cl_co);sv('cl_ph',st.cl_ph);sv('cl_em',st.cl_em);sv('cl_ad',st.cl_ad);sv('custom_pain',st.custom_pain);
+  if(st.cl_ty)document.getElementById('cl_ty').value=st.cl_ty;
+  if(st.lang)setLang(st.lang);if(st.type)setType(st.type);
+  if(st.selRegion){selRegion=st.selRegion;initRegions();}
+  if(st.selMgr!==undefined){selMgr=st.selMgr;initMgrs();}
+  sv('m_name',st.m_name);sv('m_role',st.m_role);sv('m_ph',st.m_ph);sv('m_em',st.m_em);
+  if(st.pains)st.pains.forEach(function(on,i){var e=document.getElementById('p'+i);if(e){on?e.classList.add('on'):e.classList.remove('on');}});
+  if(st.selCases){selCases=JSON.parse(JSON.stringify(st.selCases));initCases();}
+  rows=JSON.parse(JSON.stringify(st.rows||[]));renderRows();
+  works=JSON.parse(JSON.stringify(st.works||[]));renderWorks();
+  if(st.led){sv('led_size',st.led.size);sv('led_pitch',st.led.pitch);sv('led_bright',st.led.bright);sv('led_freq',st.led.freq);sv('led_power',st.led.power);sv('led_temp',st.led.temp);sv('led_angle',st.led.angle);sv('led_area',st.led.area);}
+  sv('global-disc',st.globalDisc||'0');sv('c_time',st.c_time);sv('c_pay',st.c_pay);sv('c_note',st.c_note);
+  sv('c_validity',st.c_validity||'48 часов');sv('c_conf',st.c_conf||'Конфиденциально');sv('c_warr',st.c_warr||'Гарантия Hikvision 3 года');
+  if(st.includedItems&&st.includedItems.length){includedItems=JSON.parse(JSON.stringify(st.includedItems));}else{includedItems=JSON.parse(JSON.stringify(DEFAULT_INCLUDED));}
+  renderIncluded();
+  if(st.c_st)document.getElementById('c_st').value=st.c_st;
+  switchTab('v-client');upd();updateMap();toast('📂 '+st.num);
+}
+function delKP(kpNum){
+  if(!confirm('Удалить '+kpNum+'?'))return;
+  google.script.run.withSuccessHandler(function(res){
+    if(res&&res.success){
+      google.script.run.withSuccessHandler(function(list){kpList=list||[];renderSaved();}).getKPs_LED();
+      toast('🗑 Удалено');
+    } else {
+      toast('❌ '+(res&&res.error?res.error:'Ошибка'));
+    }
+  }).withFailureHandler(function(e){toast('❌ '+e.message);}).deleteKP_LED(kpNum);
+}
+
+function newKP(){
+  kpN++;sv('kp-num','КП-'+String(kpN).padStart(3,'0'));
+  ['cl_n','cl_co','cl_ph','cl_em','cl_ad','custom_pain','led_size','led_pitch','led_bright','led_freq','led_power','led_temp','led_angle','led_area'].forEach(function(id){sv(id,'');});
+  document.getElementById('cl_ty').value='торгового центра';
+  PAINS.forEach(function(_,i){var e=document.getElementById('p'+i);if(e)e.classList.remove('on');});
+  selCases={};initCases();rows=[];addRow();addRow();addRow();
+  works=[];addWork();
+  sv('global-disc','0');sv('c_time','3–7 рабочих дней');sv('c_pay','50% предоплата, 50% при сдаче');
+  sv('c_note','Данное предложение конфиденциально и предназначено исключительно для указанного клиента. Цены действительны 48 часов с момента передачи КП.');
+  document.getElementById('c_st').value='Отправлено';
+  switchTab('v-client');upd();updateMap();
+}
+
+function renderList(){var b=document.getElementById('list-body');if(!kpList||!kpList.length){b.innerHTML='<div class="loading">Нет КП.</div>';return;}var html='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#f0f4ed"><th style="padding:7px 8px;text-align:left;border-bottom:1px solid #dde3d8">Дата</th><th style="padding:7px 8px;text-align:left;border-bottom:1px solid #dde3d8">№</th><th style="padding:7px 8px;text-align:left;border-bottom:1px solid #dde3d8">Клиент</th><th style="padding:7px 8px;text-align:left;border-bottom:1px solid #dde3d8">Адрес</th><th style="padding:7px 8px;text-align:left;border-bottom:1px solid #dde3d8">Тип</th><th style="padding:7px 8px;text-align:right;border-bottom:1px solid #dde3d8">Сумма</th><th style="padding:7px 8px;text-align:left;border-bottom:1px solid #dde3d8">Статус</th><th style="padding:7px 8px;border-bottom:1px solid #dde3d8"></th></tr></thead><tbody>';kpList.forEach(function(kp,i){html+='<tr style="border-bottom:1px solid #f0f0f0"><td style="padding:7px 8px;color:#888">'+ex2(kp.date||'')+'</td><td style="padding:7px 8px;font-weight:bold">'+ex2(kp.num||'')+'</td><td style="padding:7px 8px">'+ex2(kp.name||'—')+(kp.company?' · '+ex2(kp.company):'')+'</td><td style="padding:7px 8px;font-size:11px;color:#888">'+ex2(kp.addr||'—')+'</td><td style="padding:7px 8px;font-size:11px">'+ex2(kp.type||'')+'</td><td style="padding:7px 8px;text-align:right;font-weight:bold;color:#0E411F">'+ex2(kp.total||'—')+'</td><td style="padding:7px 8px;font-size:11px">'+ex2(kp.status||'—')+'</td><td style="padding:7px 8px"><button style="padding:3px 8px;font-size:11px;border:1px solid #dde3d8;border-radius:4px;cursor:pointer;background:#fff" onclick="if(kpList['+i+']&&kpList['+i+'].state)loadKP(kpList['+i+'].state)">Открыть</button></td></tr>';});b.innerHTML=html+'</tbody></table>';}
+
+function renderPV(){document.getElementById('pv-wrap').innerHTML=buildPreviewHTML();}
+
+function buildPreviewHTML(){
+  var rawName=g("cl_n");
+  var name=rawName||"Уважаемый клиент";
+  var company=g("cl_co");
+  var displayName=company?(rawName?(company+" · "+rawName):company):name;
+  var addr=g('cl_ad')||'';
+  // Перевод типа объекта на язык КП
+  var TYPE_RO={'торгового центра':'Centru comercial','квартиры':'Apartament','дома':'Casă privată','офиса':'Birou','дачи':'Casă de țară','магазина':'Magazin','склада':'Depozit','бизнес-центра':'Centru de afaceri','завода':'Fabrică / Producție','школы/лицея':'Școală / Liceu','детского сада':'Grădiniță','госучреждения':'Instituție publică','больницы/клиники':'Spital / Clinică','объекта':'Obiect'};
+  var typeRaw=g('cl_ty')||'объекта';
+  var L=LANG==='RU';
+  var type=L?typeRaw:(TYPE_RO[typeRaw]||typeRaw);
+  var typeCap=type.charAt(0).toUpperCase()+type.slice(1);
+  var aap=ap();
+  var customPain=g('custom_pain');
+  var mgr=MGRS[selMgr]||MGRS[0]||{};
+  var mname=g('m_name')||mgr.name||'';
+  var mrole=g('m_role')||mgr.role||'';
+  var mph=g('m_ph')||mgr.ph||'';
+  var mem=g('m_em')||mgr.em||'';
+  var gd=parseFloat(g('global-disc'))||0;
+  var ledP=getLEDParams();
+  var hasLED=hasLEDParams();
+  var orig=totO(),disc=totD();
+  var co=CONTACTS_BY_REGION[selRegion]||CONTACTS_BY_REGION.center;
+  var dateStr=new Date().toLocaleDateString(L?'ru-RU':'ro-MD');
+
+  var heroTitle=L?'КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ':'OFERTĂ COMERCIALĂ';
+  var tagline=L?'Системы безопасности · Видеонаблюдение · СКУД · LED-экраны':'Sisteme de securitate · Supraveghere video · Control acces · Ecrane LED';
+
+  // ===== inline style helpers =====
+  var sH2='font-size:16px;font-weight:bold;color:#0E411F;margin:0 0 4px;padding:0';
+  var sLine='height:3px;background:#7FA822;width:42px;margin:0 0 14px';
+  var sSec='margin-bottom:22px';
+  var logoBox='<div style="width:78px;height:78px;background:#fff;border-radius:8px;text-align:center;padding-top:16px;box-sizing:border-box"><div style="font-size:20px;font-weight:bold;color:#0E411F;line-height:1">Q</div><div style="font-size:11px;font-weight:bold;color:#0E411F;line-height:1;margin-top:2px">GROUP</div><div style="font-size:7px;color:#7FA822;margin-top:3px;letter-spacing:1px">SINCE 2002</div></div>';
+
+  var html='';
+
+  // ===== HERO =====
+  html+='<div style="background:#0E411F;padding:22px 30px;color:#fff">';
+  html+='<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>';
+  html+='<td valign="middle" width="98" style="padding-right:18px">'+logoBox+'</td>';
+  html+='<td valign="middle">';
+  html+='<div style="font-size:22px;font-weight:bold;color:#fff;letter-spacing:0.5px;line-height:1.15">'+ex2(heroTitle)+'</div>';
+  html+='<div style="font-size:11px;color:#DDE8C0;margin-top:6px">'+ex2(tagline)+'</div>';
+  html+='<div style="font-size:10px;color:#9bb09f;margin-top:8px">www.qhub.md &nbsp;·&nbsp; '+dateStr+' &nbsp;·&nbsp; '+ex2(g('kp-num'))+'</div>';
+  html+='</td></tr></table>';
+  html+='</div>';
+
+  // ===== CONTENT START =====
+  html+='<div style="padding:24px 30px;background:#fff;color:#1a1a1a">';
+
+  // ===== О КОМПАНИИ (только для новых клиентов) =====
+  if(KP_TYPE==='new'){
+    html+='<div style="'+sSec+'">';
+    html+='<h2 style="'+sH2+'">'+(L?'О компании':'Despre Noi')+'</h2>';
+    html+='<div style="'+sLine+'"></div>';
+    html+='<p style="font-size:12px;color:#444;line-height:1.7;margin:0 0 12px">';
+    html+=L
+      ?'Компания <b>QGROUP</b> работает на рынке Молдовы с <b>2002 года</b> и специализируется на <b>LED-экранах и интерактивных панелях</b> — для интерьерной и наружной рекламы, конференц-залов, шоурумов, цифровых витрин магазинов. Реализовано более <b>2000 м² LED-экранов</b> на объектах в Молдове. Полный цикл: проектирование, поставка, монтаж, сервис.'
+      :'Compania <b>QGROUP</b> activează pe piața din Moldova din <b>2002</b> și este specializată în <b>ecrane LED și panouri interactive</b> — pentru reclamă interioară și exterioară, săli de conferință, showroom-uri, vitrine digitale. Peste <b>2000 m² de ecrane LED</b> instalate pe obiecte în Moldova. Ciclu complet: proiectare, aprovizionare, montare, service.';
+    html+='</p>';
+    html+='<table cellpadding="0" cellspacing="6" border="0" width="100%"><tr>';
+    [['2000+ m²',L?'установленных LED':'LED instalate'],
+     ['23+ '+(L?'года':'ani'),L?'на рынке':'pe piață'],
+     ['30 '+(L?'дней':'zile'),L?'срок выполнения':'termen execuție']].forEach(function(s){
+      html+='<td valign="middle" align="center" width="33%" style="background:#f2f8e6;border:1px solid #c8e090;border-radius:6px;padding:14px 12px">';
+      html+='<div style="font-size:18px;font-weight:bold;color:#0E411F;line-height:1.1">'+s[0]+'</div>';
+      html+='<div style="font-size:11px;color:#666;margin-top:4px">'+s[1]+'</div>';
+      html+='</td>';
+    });
+    html+='</tr></table>';
+    html+='</div>';
+  }
+
+  // ===== КЛИЕНТ И ОБЪЕКТ =====
+  html+='<div style="'+sSec+'">';
+  html+='<h2 style="'+sH2+'">'+(L?'Клиент и Объект':'Client și Obiect')+'</h2>';
+  html+='<div style="'+sLine+'"></div>';
+  html+='<table cellpadding="0" cellspacing="6" border="0" width="100%"><tr>';
+  html+='<td valign="top" width="50%" style="background:#f8f9f5;border:1px solid #dde3d8;border-radius:6px;padding:12px 14px">';
+  html+='<div style="font-size:9px;color:#7FA822;text-transform:uppercase;letter-spacing:0.08em;font-weight:bold">'+(L?'Клиент':'Client')+'</div>';
+  html+='<div style="font-size:14px;font-weight:bold;color:#1a1a1a;margin-top:4px">'+ex2(displayName)+'</div>';
+  var contactLine=[g('cl_ph'),g('cl_em')].filter(Boolean).join(' · ');
+  if(contactLine)html+='<div style="font-size:11px;color:#666;margin-top:3px">'+ex2(contactLine)+'</div>';
+  html+='</td>';
+  html+='<td valign="top" width="50%" style="background:#f8f9f5;border:1px solid #dde3d8;border-radius:6px;padding:12px 14px">';
+  html+='<div style="font-size:9px;color:#7FA822;text-transform:uppercase;letter-spacing:0.08em;font-weight:bold">'+(L?'Объект':'Obiect')+'</div>';
+  html+='<div style="font-size:14px;font-weight:bold;color:#1a1a1a;margin-top:4px">'+ex2(typeCap)+'</div>';
+  if(addr)html+='<div style="font-size:11px;color:#666;margin-top:3px">'+ex2(addr)+'</div>';
+  html+='</td>';
+  html+='</tr></table>';
+  html+='</div>';
+
+  // ===== ЗАДАЧИ — РЕШЕНИЯ =====
+  if(KP_TYPE==='new'&&(aap.length||customPain)){
+    html+='<div style="'+sSec+'">';
+    html+='<h2 style="'+sH2+'">'+(L?'Ваши задачи — наши решения':'Obiectivele Dvs. — Soluțiile Noastre')+'</h2>';
+    html+='<div style="'+sLine+'"></div>';
+    html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse">';
+    aap.forEach(function(p){
+      html+='<tr>';
+      html+='<td valign="middle" style="background:#0E411F;color:#fff;padding:11px 14px;font-weight:bold;font-size:11.5px;width:42%;border-bottom:2px solid #fff">'+ex2(L?p.ru:p.ro)+'</td>';
+      html+='<td valign="middle" style="background:#f8f9f5;padding:11px 14px;border:1px solid #dde3d8;border-left:none;font-size:11.5px;color:#444">→ '+ex2(L?p.s:(p.sRO||p.s))+'</td>';
+      html+='</tr>';
+    });
+    if(customPain){
+      html+='<tr>';
+      html+='<td valign="middle" style="background:#E87820;color:#fff;padding:11px 14px;font-weight:bold;font-size:11.5px;width:42%">'+ex2(customPain)+'</td>';
+      html+='<td valign="middle" style="background:#fef4ec;padding:11px 14px;border:1px solid #f5c490;border-left:none;font-size:11.5px;color:#444">→ '+(L?'Подберём индивидуальное решение':'Vom găsi o soluție individuală')+'</td>';
+      html+='</tr>';
+    }
+    html+='</table>';
+    html+='</div>';
+  }
+
+  // ===== ОБОРУДОВАНИЕ =====
+  var validRows=rows.filter(function(r){return r.n;});
+  if(validRows.length){
+    html+='<div style="'+sSec+'">';
+    html+='<h2 style="'+sH2+'">'+(L?'Оборудование':'Echipament')+'</h2>';
+    html+='<div style="'+sLine+'"></div>';
+    html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:11.5px">';
+    html+='<thead><tr style="background:#0E411F;color:#fff">';
+    ['Наименование|Denumire','Модель|Model','Кол.|Cant.','Цена|Preț','Скидка|Reducere','Сумма|Total'].forEach(function(h,i){
+      var parts=h.split('|');
+      var al=(i===2||i===4)?'center':(i>=3?'right':'left');
+      html+='<th style="padding:10px;text-align:'+al+';font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:0.05em">'+(L?parts[0]:parts[1])+'</th>';
+    });
+    html+='</tr></thead><tbody>';
+    validRows.forEach(function(r,i){
+      var dv=r.d!==''?parseFloat(r.d)||0:gd;
+      var bg=i%2===0?'#fff':'#fafbf7';
+      html+='<tr style="background:'+bg+'">';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;color:#1a1a1a"><div style="display:flex;align-items:center;gap:11px">'+(r.img?'<img src="'+r.img+'" style="width:54px;height:54px;object-fit:contain;border:1px solid #eee;border-radius:5px;background:#fff;flex:none;padding:2px">':'')+'<span>'+ex2(r.n)+'</span></div></td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;color:#666;font-size:11px">'+ex2(r.m)+'</td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;text-align:center">'+ex2(r.q)+' '+ex2(r.u)+'</td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;text-align:right;font-weight:bold">'+(r.p?'$'+parseFloat(r.p).toFixed(0):'')+'</td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;text-align:center;color:#E87820;font-weight:bold">'+(dv>0?'−'+dv+'%':'—')+'</td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;text-align:right;font-weight:bold;color:#0E411F">'+(r.s?'$'+r.s.toFixed(0):'')+'</td>';
+      html+='</tr>';
+      // Описание товара (только если открыто менеджером)
+      if(r.descOpen && r.desc){
+        html+='<tr style="background:'+bg+'"><td colspan="6" style="padding:0 10px 9px 10px;border-bottom:1px solid #eef2e8;color:#555;font-size:11px;line-height:1.5">';
+        html+='<div style="background:#f2f8e6;border-left:3px solid #7FA822;padding:8px 11px;border-radius:0 6px 6px 0;white-space:pre-wrap">'+ex2(r.desc)+'</div>';
+        html+='</td></tr>';
+      }
+    });
+    html+='</tbody></table>';
+    html+='</div>';
+  }
+
+  // ===== LED ПАРАМЕТРЫ =====
+  if(hasLED){
+    html+='<div style="'+sSec+'">';
+    html+='<h2 style="'+sH2+'">'+(L?'Технические параметры LED-экрана':'Parametri Tehnici LED')+'</h2>';
+    html+='<div style="'+sLine+'"></div>';
+    var ledSpecs=[
+      [L?'Размер':'Dimensiune',ledP.size],
+      [L?'Шаг пикселя':'Pas pixel',ledP.pitch],
+      [L?'Яркость':'Luminozitate',ledP.bright],
+      [L?'Частота обновления':'Frecvență',ledP.freq],
+      [L?'Потребляемая мощность':'Putere',ledP.power],
+      [L?'Рабочая температура':'Temperatură',ledP.temp],
+      [L?'Угол обзора':'Unghi vizualizare',ledP.angle],
+      [L?'Площадь экрана':'Suprafață ecran',ledP.area]
+    ].filter(function(s){return s[1];});
+    html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:11.5px;border:1px solid #dde3d8;border-radius:6px;overflow:hidden">';
+    ledSpecs.forEach(function(s,i){
+      var bg=i%2===0?'#f8f9f5':'#fff';
+      html+='<tr style="background:'+bg+'">';
+      html+='<td style="padding:9px 14px;border-bottom:'+(i<ledSpecs.length-1?'1px solid #eef2e8':'none')+';color:#666;width:38%;font-weight:bold">'+ex2(s[0])+'</td>';
+      html+='<td style="padding:9px 14px;border-bottom:'+(i<ledSpecs.length-1?'1px solid #eef2e8':'none')+';color:#1a1a1a">'+ex2(s[1])+'</td>';
+      html+='</tr>';
+    });
+    html+='</table>';
+    html+='</div>';
+  }
+
+  // ===== РАБОТЫ И УСЛУГИ =====
+  var validWorks=works.filter(function(w){return w.n;});
+  if(validWorks.length){
+    html+='<div style="'+sSec+'">';
+    html+='<h2 style="'+sH2+'">'+(L?'Работы и услуги':'Lucrări și Servicii')+'</h2>';
+    html+='<div style="'+sLine+'"></div>';
+    html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:11.5px">';
+    html+='<thead><tr style="background:#0E411F;color:#fff">';
+    ['Наименование|Denumire','Кол.|Cant.','Цена|Preț','Сумма|Total'].forEach(function(h,i){
+      var parts=h.split('|');
+      var al=i===0?'left':(i===1?'center':'right');
+      html+='<th style="padding:10px;text-align:'+al+';font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:0.05em">'+(L?parts[0]:parts[1])+'</th>';
+    });
+    html+='</tr></thead><tbody>';
+    validWorks.forEach(function(w,i){
+      var bg=i%2===0?'#fff':'#fafbf7';
+      html+='<tr style="background:'+bg+'">';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8">'+ex2(w.n)+'</td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;text-align:center">'+ex2(w.q)+' '+ex2(w.u)+'</td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;text-align:right;font-weight:bold">'+(w.p?'$'+parseFloat(w.p).toFixed(0):'')+'</td>';
+      html+='<td style="padding:9px 10px;border-bottom:1px solid #eef2e8;text-align:right;font-weight:bold;color:#0E411F">'+(w.s?'$'+w.s.toFixed(0):'')+'</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table>';
+    html+='</div>';
+  }
+
+  // ===== ИТОГО =====
+  html+='<div style="'+sSec+'">';
+  html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#0E411F;border-radius:8px"><tr>';
+  html+='<td valign="middle" style="padding:18px 22px;color:#fff">';
+  if(orig!==disc){
+    html+='<div style="font-size:10px;color:#9bb09f;text-transform:uppercase;letter-spacing:0.06em">'+(L?'Без скидки':'Fără reducere')+'</div>';
+    html+='<div style="font-size:14px;color:#9bb09f;text-decoration:line-through;margin-top:3px">$'+orig.toFixed(0)+'</div>';
+  } else {
+    html+='<div style="font-size:11px;color:#DDE8C0;text-transform:uppercase;letter-spacing:0.06em">'+(L?'Итого без НДС':'Total fără TVA')+'</div>';
+  }
+  html+='</td>';
+  html+='<td valign="middle" align="right" style="padding:18px 22px;color:#fff">';
+  if(orig!==disc)html+='<div style="font-size:10px;color:#DDE8C0;text-transform:uppercase;letter-spacing:0.06em">'+(L?'Итого со скидкой':'Total cu reducere')+'</div>';
+  html+='<div style="font-size:28px;font-weight:bold;color:#fff;line-height:1.1">$'+disc.toFixed(0)+'</div>';
+  html+='</td></tr></table>';
+  html+='</div>';
+
+  // ===== ЧТО ВКЛЮЧЕНО (только для новых, только активные пункты) =====
+  var activeIncluded=(includedItems||[]).filter(function(it){return it.on;});
+  if(KP_TYPE==='new' && activeIncluded.length){
+    html+='<div style="'+sSec+'">';
+    html+='<h2 style="'+sH2+'">'+(L?'Что включено в цену':'Ce Include Prețul')+'</h2>';
+    html+='<div style="'+sLine+'"></div>';
+    html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:11.5px">';
+    activeIncluded.forEach(function(it){
+      var title=L?it.ru:it.ro;
+      var desc=L?it.descRU:it.descRO;
+      html+='<tr>';
+      html+='<td valign="middle" align="center" style="background:#0E411F;color:#fff;padding:12px 14px;font-weight:bold;font-size:11.5px;width:24%;border-bottom:2px solid #fff">'+ex2(title)+'</td>';
+      html+='<td valign="middle" style="background:#f8f9f5;padding:12px 14px;border:1px solid #dde3d8;border-left:none;color:#444;line-height:1.5">'+ex2(desc)+'</td>';
+      html+='</tr>';
+    });
+    html+='</table>';
+    html+='</div>';
+  }
+
+  // ===== СРОК ВЫПОЛНЕНИЯ =====
+  html+='<div style="'+sSec+'">';
+  html+='<h2 style="'+sH2+'">'+(L?'Срок выполнения':'Termen de Execuție')+'</h2>';
+  html+='<div style="'+sLine+'"></div>';
+  html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f2f8e6;border:1px solid #c8e090;border-radius:6px;border-collapse:separate"><tr>';
+  html+='<td valign="middle" align="center" width="150" style="background:#0E411F;color:#fff;padding:18px 14px;border-radius:6px 0 0 6px">';
+  var timeStr=g('c_time')||(L?'3–7 дней':'3–7 zile');
+  if(!L){
+    // Авто-перевод типичных русских слов в сроке на румынский
+    timeStr=timeStr.replace(/рабочих дней/gi,'zile lucrătoare').replace(/рабочих дня/gi,'zile lucrătoare').replace(/дней/gi,'zile').replace(/дня/gi,'zile').replace(/день/gi,'zi').replace(/недел[ьи]/gi,'săptămâni').replace(/неделя/gi,'săptămână').replace(/месяцев/gi,'luni').replace(/месяца/gi,'luni').replace(/месяц/gi,'lună');
+  }
+  html+='<div style="font-size:17px;font-weight:bold;line-height:1.15">'+ex2(timeStr)+'</div>';
+  html+='<div style="font-size:10px;color:#DDE8C0;margin-top:5px;text-transform:uppercase;letter-spacing:0.05em">'+(L?'на проект':'pentru proiect')+'</div>';
+  html+='</td>';
+  html+='<td valign="middle" style="padding:14px 18px;color:#1a1a1a;font-size:11.5px;line-height:1.65">';
+  html+=L
+    ?'Срок включает все этапы: <b>проектирование, поставку оборудования, монтаж, пусконаладку и сдачу объекта</b>. Соблюдаем согласованные сроки и поддерживаем связь с клиентом на всех этапах.'
+    :'Termenul include toate etapele: <b>proiectare, aprovizionare, montare, configurare și predarea obiectului</b>. Respectăm termenele asumate și menținem comunicarea cu clientul pe tot parcursul.';
+  html+='</td></tr></table>';
+  html+='</div>';
+
+  // ===== РЕАЛИЗОВАННЫЕ ПРОЕКТЫ (стиль PDF: фото слева, текст справа) =====
+  var hasAnyCase=false;
+  CASES_GROUPS.forEach(function(grp){grp.cases.forEach(function(c){if(selCases[c.id])hasAnyCase=true;});});
+  if(KP_TYPE==='new'&&hasAnyCase){
+    html+='<div style="'+sSec+'">';
+    html+='<h2 style="'+sH2+'">'+(L?'Реализованные проекты':'Exemple de Proiecte Realizate')+'</h2>';
+    html+='<div style="'+sLine+'"></div>';
+    html+='<p style="font-size:11.5px;color:#666;margin:0 0 14px;line-height:1.5">'+(L?'Полное портфолио наших проектов: ':'Portofoliul complet al proiectelor noastre: ')+'<a href="https://qhub.md/history" style="color:#0E411F;font-weight:bold;text-decoration:none">qhub.md/history</a></p>';
+    CASES_GROUPS.forEach(function(grp){
+      var active=grp.cases.filter(function(c){return selCases[c.id];});
+      if(!active.length)return;
+      html+='<div style="margin-bottom:14px">';
+      html+='<div style="font-size:12px;font-weight:bold;color:#0E411F;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #dde3d8">'+grp.ico+' '+(L?grp.titleRU:grp.titleRO)+'</div>';
+      active.forEach(function(c){
+        var title=L?c.ru:c.ro;
+        var sub=L?c.subRU:c.subRO;
+        var badgeColor=c.badge==='EXTERIOR'?'#0E411F':'#7FA822';
+        html+='<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:9px;border:1px solid #dde3d8;border-radius:8px;overflow:hidden"><tr>';
+        // Левая колонка - фото с бейджем
+        html+='<td valign="top" width="140" style="background:#f0f4ed;position:relative;padding:0">';
+        html+='<div style="width:140px;height:100px;background-image:url(\''+ex2(c.img)+'\');background-size:cover;background-position:center;position:relative">';
+        if(c.badge)html+='<div style="position:absolute;top:6px;left:6px;background:'+badgeColor+';color:#fff;font-size:9px;font-weight:bold;padding:3px 8px;border-radius:20px;letter-spacing:0.05em">'+c.badge+'</div>';
+        html+='</div></td>';
+        // Правая колонка - текст
+        html+='<td valign="top" style="padding:11px 14px;background:#fff">';
+        html+='<div style="font-size:13px;font-weight:bold;color:#0E411F;margin-bottom:4px;line-height:1.3">'+ex2(title)+'</div>';
+        html+='<div style="font-size:11px;color:#444;line-height:1.55;margin-bottom:6px">'+ex2(sub)+'</div>';
+        if(c.url){
+          var shortUrl=c.url.replace(/^https?:\/\//,'').replace(/\/$/,'');
+          html+='<div style="font-size:10px;color:#7FA822"><span style="color:#7FA822">→</span> <a href="'+ex2(c.url)+'" style="color:#7FA822;text-decoration:none">'+ex2(shortUrl)+'</a></div>';
+        }
+        html+='</td>';
+        html+='</tr></table>';
+      });
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+
+  // ===== УСЛОВИЯ =====
+  function trCond(s){
+    if(L||!s)return s;
+    return s
+      .replace(/Гарантия Hikvision 3 года/gi,'Garanție Hikvision 3 ani')
+      .replace(/Гарантия/gi,'Garanție')
+      .replace(/Конфиденциально/gi,'Confidențial')
+      .replace(/часов/gi,'ore').replace(/часа/gi,'ore').replace(/час/gi,'oră')
+      .replace(/предоплата/gi,'avans').replace(/при сдаче/gi,'la predare')
+      .replace(/года/gi,'ani').replace(/года/gi,'ani').replace(/год/gi,'an')
+      .replace(/недел[ьи]/gi,'săptămâni');
+  }
+  html+='<div style="'+sSec+'">';
+  html+='<h2 style="'+sH2+'">'+(L?'Условия':'Condiții')+'</h2>';
+  html+='<div style="'+sLine+'"></div>';
+  var conditions=[
+    ['⏱',trCond(g('c_validity'))||(L?'48 часов':'48 ore'),L?'действие цен':'valabilitate ofertă'],
+    ['💳',trCond(g('c_pay'))||(L?'50/50':'50/50'),L?'условия оплаты':'condiții plată'],
+    ['🛡',trCond(g('c_warr'))||(L?'Гарантия Hikvision 3 года':'Garanție Hikvision 3 ani'),L?'гарантия':'garanție'],
+    ['🔒',trCond(g('c_conf'))||(L?'Конфиденциально':'Confidențial'),L?'не для третьих лиц':'doar destinatar']
+  ];
+  html+='<table cellpadding="0" cellspacing="6" border="0" width="100%"><tr>';
+  conditions.forEach(function(c){
+    html+='<td valign="top" align="center" width="25%" style="background:#f8f9f5;border:1px solid #dde3d8;border-radius:6px;padding:12px 10px">';
+    html+='<div style="font-size:18px;line-height:1">'+c[0]+'</div>';
+    html+='<div style="font-size:11.5px;font-weight:bold;color:#0E411F;margin-top:5px">'+ex2(c[1])+'</div>';
+    html+='<div style="font-size:9.5px;color:#888;margin-top:2px">'+c[2]+'</div>';
+    html+='</td>';
+  });
+  html+='</tr></table>';
+  var note=g('c_note');
+  var DEFAULT_NOTE_RU='Данное предложение конфиденциально и предназначено исключительно для указанного клиента. Цены действительны 48 часов с момента передачи КП.';
+  var DEFAULT_NOTE_RO='Această ofertă este confidențială și destinată exclusiv clientului indicat. Prețurile sunt valabile 48 de ore de la transmiterea ofertei.';
+  if(!L && note && note.trim()===DEFAULT_NOTE_RU)note=DEFAULT_NOTE_RO;
+  if(note)html+='<p style="font-size:10.5px;color:#888;margin-top:12px;line-height:1.5;font-style:italic">'+ex2(note)+'</p>';
+  html+='</div>';
+
+  html+='</div>'; // /content
+
+  // ===== FOOTER / МЕНЕДЖЕР =====
+  html+='<div style="background:#0E411F;padding:22px 30px;color:#fff">';
+  html+='<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>';
+  html+='<td valign="middle" width="98" style="padding-right:18px">'+logoBox+'</td>';
+  html+='<td valign="middle" style="padding-left:20px;border-left:2px solid #7FA822">';
+  html+='<div style="font-size:15px;font-weight:bold;color:#fff;letter-spacing:0.3px">'+ex2(mname||'—')+'</div>';
+  if(mrole)html+='<div style="font-size:11px;color:#DDE8C0;margin-top:3px">'+ex2(mrole)+'</div>';
+  html+='<div style="font-size:11px;color:#fff;margin-top:9px"><span style="color:#7FA822;font-weight:bold">Tel:</span> '+ex2(mph||co.ph)+'</div>';
+  if(mem)html+='<div style="font-size:11px;color:#fff;margin-top:2px"><span style="color:#7FA822;font-weight:bold">Email:</span> '+ex2(mem)+'</div>';
+  html+='<div style="font-size:11px;color:#DDE8C0;margin-top:9px">'+ex2(co.addr)+'</div>';
+  html+='<div style="font-size:11px;color:#DDE8C0;margin-top:2px">www.qhub.md</div>';
+  if(USER_CTX && USER_CTX.email){
+    html+='<div style="font-size:10px;color:#7a9b80;margin-top:10px;padding-top:8px;border-top:1px dashed #2a5a3a">'+(L?'Подготовил: ':'Pregătit de: ')+ex2(USER_CTX.email)+'</div>';
+  }
+  html+='</td></tr></table>';
+  html+='</div>';
+
+  return html;
+}
+
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.style.display='block';setTimeout(function(){el.style.display='none';},2800);}
+
+google.script.run.withSuccessHandler(function(ctx){if(ctx)USER_CTX=ctx;}).getCurrentUserContext();
+initRegions();initMgrs();initCases();initPains();initCat();
+addRow();addRow();addRow();
+addWork();
+sv('global-disc','0');
+sv('c_note','Данное предложение конфиденциально и предназначено исключительно для указанного клиента. Цены действительны 48 часов с момента передачи КП.');
+renderIncluded();
+buildTabs();switchTab('v-client');upd();updateMap();setLang(LANG);
+</script>
+</body>
+</html>

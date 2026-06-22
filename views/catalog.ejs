@@ -1,0 +1,113 @@
+<%- include('partials/head') %>
+
+<div class="catalog-layout">
+  <aside class="catalog-sidebar">
+    <h2 class="sidebar__title"><%= t('home.categories') %></h2>
+    <ul class="cat-list">
+      <li>
+        <a href="/catalog<%= search ? '?search=' + encodeURIComponent(search) : '' %>"
+           class="<%= !activeCategory ? 'is-active' : '' %>"><%= t('catalog.allProducts') %></a>
+      </li>
+      <% categories.forEach(function(c) { %>
+        <li>
+          <a href="/catalog?category=<%= encodeURIComponent(c.category) %>"
+             class="<%= activeCategory === c.category ? 'is-active' : '' %> <%= c.category === '__new__' ? 'cat-list__new' : '' %>">
+            <%= c.category === '__new__' ? t('category.new') : c.category %> <span class="cat-list__count"><%= c.count %></span>
+          </a>
+        </li>
+      <% }); %>
+    </ul>
+  </aside>
+
+  <section class="catalog-main">
+    <div class="catalog-head">
+      <h1 class="catalog-title">
+        <%= activeCategory === '__new__' ? t('category.new') : (activeCategory || (search ? t('catalog.searchResults') : t('catalog.title'))) %>
+      </h1>
+      <span class="muted catalog-head__count"><%= t('catalog.productsCount', { n: pagination.total }) %></span>
+      <form class="catalog-sort" action="/catalog" method="get">
+        <% if (search) { %><input type="hidden" name="search" value="<%= search %>" /><% } %>
+        <% if (activeCategory) { %><input type="hidden" name="category" value="<%= activeCategory %>" /><% } %>
+        <label for="sort" class="muted"><%= t('catalog.sort.label') %></label>
+        <select id="sort" name="sort" onchange="this.form.submit()">
+          <option value="name" <%= sort === 'name' ? 'selected' : '' %>><%= t('catalog.sort.name') %></option>
+          <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>><%= t('catalog.sort.priceAsc') %></option>
+          <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>><%= t('catalog.sort.priceDesc') %></option>
+          <option value="new" <%= sort === 'new' ? 'selected' : '' %>><%= t('catalog.sort.new') %></option>
+        </select>
+      </form>
+    </div>
+
+    <% if (search) { %>
+      <p class="muted"><%= t('catalog.searchedFor') %> «<strong><%= search %></strong>»
+        <a href="/catalog"><%= t('catalog.reset') %></a></p>
+    <% } %>
+
+    <% if (!products.length) { %>
+      <div class="empty"><%= t('catalog.empty') %></div>
+    <% } else { %>
+      <% const canUseCart = ['admin','sales','partner'].includes(role); %>
+      <div class="product-grid">
+        <% products.forEach(function(p) { %>
+          <div class="product-card">
+            <a class="product-card__link" href="/product/<%= p.id %>">
+              <div class="product-card__img">
+                <% if (p.thumb_path || p.image_path) { %>
+                  <img src="<%= p.thumb_path || p.image_path %>" alt="<%= pName(p) %>" loading="lazy" />
+                <% } else { %>
+                  <div class="product-card__noimg"><%= t('common.noPhoto') %></div>
+                <% } %>
+                <% if (p.is_new) { %><span class="badge badge--new"><%= t('badge.new') %></span><% } %>
+                <% if (p.is_active === 0) { %><span class="badge badge--hidden"><%= t('common.hidden') %></span><% } %>
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__code"><%= p.code %></div>
+                <div class="product-card__name"><%= pName(p) %></div>
+                <div class="product-card__prices">
+                  <% if (p.price_retail != null) { %>
+                    <span class="price price--retail"><%= formatPrice(p.price_retail) %> $</span>
+                  <% } else { %>
+                    <span class="price price--request"><%= t('price.onRequest') %></span>
+                  <% } %>
+                  <% if (canSeePartner && p.price_partner != null) { %>
+                    <span class="price price--partner"><%= t('catalog.partnerShort') %>: <%= formatPrice(p.price_partner) %> $</span>
+                  <% } %>
+                </div>
+              </div>
+            </a>
+            <% if (canUseCart) { %>
+              <div class="product-card__cart">
+                <button type="button" class="add-to-cart"
+                        data-code="<%= p.code %>" data-name="<%= pName(p) %>"
+                        data-price="<%= p.price_retail != null ? p.price_retail : '' %>"
+                        data-img="<%= p.thumb_path || p.image_path || '' %>"><%= t('cart.add') %></button>
+              </div>
+            <% } %>
+          </div>
+        <% }); %>
+      </div>
+
+      <% if (pagination.pages > 1) { %>
+        <nav class="pagination">
+          <% const qs = (n) => {
+               const params = new URLSearchParams();
+               if (search) params.set('search', search);
+               if (activeCategory) params.set('category', activeCategory);
+               if (sort && sort !== 'name') params.set('sort', sort);
+               params.set('page', n);
+               return '/catalog?' + params.toString();
+             }; %>
+          <% if (pagination.page > 1) { %>
+            <a href="<%= qs(pagination.page - 1) %>" class="btn btn--ghost btn--sm"><%= t('common.prev') %></a>
+          <% } %>
+          <span class="pagination__info"><%= t('common.pageOf', { page: pagination.page, pages: pagination.pages }) %></span>
+          <% if (pagination.page < pagination.pages) { %>
+            <a href="<%= qs(pagination.page + 1) %>" class="btn btn--ghost btn--sm"><%= t('common.next') %></a>
+          <% } %>
+        </nav>
+      <% } %>
+    <% } %>
+  </section>
+</div>
+
+<%- include('partials/foot') %>

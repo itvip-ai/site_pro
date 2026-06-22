@@ -1,0 +1,30 @@
+<%- include('../partials/head') %>
+
+<div class="kp-hub">
+  <header class="page-head">
+    <div>
+      <h1><%= t('kp.title') %></h1>
+      <p class="muted"><%= t('kp.subtitle') %></p>
+    </div>
+  </header>
+
+  <% if (!tiles.length) { %>
+    <div class="empty"><%= t('kp.empty') %></div>
+  <% } else { %>
+    <div class="kp-grid">
+      <% tiles.forEach(function(tl) { %>
+        <div class="kp-card">
+          <div class="kp-card__icon"><%= tl.icon %></div>
+          <h2 class="kp-card__title"><%= t('kp.builder.' + tl.key) %></h2>
+          <p class="kp-card__desc"><%= t('kp.builder.' + tl.key + '.desc') %></p>
+          <div class="kp-card__actions">
+            <a href="<%= tl.url %>" class="btn btn--primary"><%= t('kp.open') %></a>
+            <a href="<%= tl.mobile %>" class="btn btn--ghost btn--sm"><%= t('kp.openMobile') %></a>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/foot') %>

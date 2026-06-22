@@ -1,0 +1,64 @@
+<%- include('partials/head') %>
+
+<nav class="breadcrumbs">
+  <a href="/catalog"><%= t('catalog.title') %></a>
+  <% if (product.category) { %>
+    <span>/</span>
+    <a href="/catalog?category=<%= encodeURIComponent(product.category) %>"><%= product.category %></a>
+  <% } %>
+</nav>
+
+<article class="product-detail">
+  <div class="product-detail__media">
+    <% if (product.image_path) { %>
+      <img src="<%= product.image_path %>" alt="<%= pName(product) %>" />
+    <% } else { %>
+      <div class="product-detail__noimg"><%= t('common.noPhoto') %></div>
+    <% } %>
+  </div>
+
+  <div class="product-detail__info">
+    <div class="product-detail__code"><%= t('product.code') %>: <%= product.code %></div>
+    <h1 class="product-detail__name"><%= pName(product) %></h1>
+    <% if (product.category) { %>
+      <div class="product-detail__cat"><%= product.category %></div>
+    <% } %>
+
+    <div class="price-box">
+      <div class="price-box__row">
+        <span class="price-box__label"><%= t('product.retailPrice') %></span>
+        <% if (product.price_retail != null) { %>
+          <span class="price price--retail price--lg"><%= formatPrice(product.price_retail) %> $</span>
+        <% } else { %>
+          <span class="price price--request price--lg"><%= t('price.onRequestShort') %></span>
+        <% } %>
+      </div>
+      <% if (canSeePartner && product.price_partner != null) { %>
+        <div class="price-box__row price-box__row--partner">
+          <span class="price-box__label"><%= t('product.partnerPrice') %></span>
+          <span class="price price--partner price--lg"><%= formatPrice(product.price_partner) %> $</span>
+        </div>
+      <% } else if (!canSeePartner) { %>
+        <div class="price-box__hint">
+          <a href="/login"><%= t('product.loginLink') %></a><%= t('product.loginHintSuffix') %>
+        </div>
+      <% } %>
+    </div>
+
+    <% if (['admin','sales','partner'].includes(role)) { %>
+      <button type="button" class="btn btn--primary btn--lg add-to-cart" style="margin:4px 0 18px"
+              data-code="<%= product.code %>" data-name="<%= pName(product) %>"
+              data-price="<%= product.price_retail != null ? product.price_retail : '' %>"
+              data-img="<%= product.thumb_path || product.image_path || '' %>">🛒 <%= t('cart.add') %></button>
+    <% } %>
+
+    <% if (pDesc(product)) { %>
+      <div class="product-detail__desc">
+        <h2><%= t('product.description') %></h2>
+        <p><%- nl2br(pDesc(product)) %></p>
+      </div>
+    <% } %>
+  </div>
+</article>
+
+<%- include('partials/foot') %>

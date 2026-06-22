@@ -1,0 +1,118 @@
+<%- include('../partials/admin-head') %>
+
+<header class="page-head">
+  <h1><%= t('admin.users.title') %></h1>
+</header>
+
+<% if (creatableRoles.length) { %>
+  <form class="form form--card" action="/admin/users" method="post">
+    <h2 class="card-title"><%= t('admin.users.create') %></h2>
+    <div class="form-grid">
+      <label class="field">
+        <span><%= t('admin.th.login') %> *</span>
+        <input type="text" name="login" required autocomplete="off" />
+      </label>
+      <label class="field">
+        <span><%= t('admin.users.password') %> *</span>
+        <input type="text" name="password" required minlength="6" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span><%= t('admin.users.role') %> *</span>
+        <select name="role" required>
+          <% creatableRoles.forEach(function(r) { %>
+            <option value="<%= r %>"><%= roleLabel(r) %></option>
+          <% }); %>
+        </select>
+      </label>
+      <label class="field">
+        <span><%= t('admin.users.displayName') %></span>
+        <input type="text" name="display_name" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span><%= t('admin.users.phone') %></span>
+        <input type="text" name="phone" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span><%= t('admin.users.department') %></span>
+        <input type="text" name="department" autocomplete="off" placeholder="B2B, Manager vinzari LED…" />
+      </label>
+      <label class="field">
+        <span><%= t('admin.users.color') %></span>
+        <input type="color" name="color" value="#16572c" />
+      </label>
+      <label class="field">
+        <span><%= t('admin.users.company') %></span>
+        <input type="text" name="company" autocomplete="off" />
+      </label>
+      <label class="field checkbox">
+        <input type="checkbox" name="led_access" value="1" />
+        <span><%= t('admin.users.ledAccess') %></span>
+      </label>
+      <div class="field field--end">
+        <button type="submit" class="btn btn--primary"><%= t('admin.form.create') %></button>
+      </div>
+    </div>
+  </form>
+<% } %>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr><th><%= t('admin.th.login') %></th><th><%= t('admin.users.displayName') %></th><th><%= t('admin.users.role') %></th><th><%= t('admin.users.department') %></th><th><%= t('admin.th.status') %></th><th></th></tr>
+    </thead>
+    <tbody>
+      <% users.forEach(function(u) { %>
+        <tr class="<%= u.is_active ? '' : 'row--hidden' %>">
+          <td class="mono"><%= u.login %><% if (u.id === currentUserId) { %> <span class="muted"><%= t('admin.users.you') %></span><% } %></td>
+          <td><%= u.display_name || '—' %></td>
+          <td><%= roleLabel(u.role) %></td>
+          <td><%= u.department || '—' %><% if (u.led_access) { %> <span class="badge badge--ok">LED</span><% } %></td>
+          <td>
+            <% if (u.is_active) { %><span class="badge badge--ok"><%= t('admin.users.active') %></span>
+            <% } else { %><span class="badge badge--muted"><%= t('admin.users.blocked') %></span><% } %>
+          </td>
+          <td class="ta-r nowrap">
+            <% if (canManage(u)) { %>
+              <details class="row-actions">
+                <summary class="btn btn--ghost btn--sm"><%= t('admin.users.actions') %></summary>
+                <div class="row-actions__menu">
+                  <!-- Profile / contact card -->
+                  <form action="/admin/users/<%= u.id %>/profile" method="post" class="menu-form">
+                    <div class="menu-form__title"><%= t('admin.users.contactCard') %></div>
+                    <input type="text" name="display_name" value="<%= u.display_name || '' %>" placeholder="<%= t('admin.users.displayName') %>" />
+                    <input type="text" name="phone" value="<%= u.phone || '' %>" placeholder="<%= t('admin.users.phone') %>" />
+                    <input type="text" name="department" value="<%= u.department || '' %>" placeholder="<%= t('admin.users.department') %>" />
+                    <input type="text" name="company" value="<%= u.company || '' %>" placeholder="<%= t('admin.users.company') %>" />
+                    <label class="menu-color"><span><%= t('admin.users.color') %></span><input type="color" name="color" value="<%= u.color || '#16572c' %>" /></label>
+                    <label class="menu-check"><input type="checkbox" name="led_access" value="1" <%= u.led_access ? 'checked' : '' %> /> <%= t('admin.users.ledAccess') %></label>
+                    <button class="menu-item">💾 <%= t('admin.form.save') %></button>
+                  </form>
+
+                  <% if (u.id !== currentUserId) { %>
+                    <% if (u.is_active) { %>
+                      <form action="/admin/users/<%= u.id %>/block" method="post" onsubmit="return confirm('<%= t('admin.users.confirmBlock') %>')">
+                        <button class="menu-item"><%= t('admin.users.block') %></button>
+                      </form>
+                    <% } else { %>
+                      <form action="/admin/users/<%= u.id %>/unblock" method="post">
+                        <button class="menu-item"><%= t('admin.users.unblock') %></button>
+                      </form>
+                    <% } %>
+                  <% } %>
+                  <form action="/admin/users/<%= u.id %>/reset-password" method="post" class="menu-form">
+                    <input type="text" name="password" placeholder="<%= t('admin.users.newPassword') %>" minlength="6" required />
+                    <button class="menu-item"><%= t('admin.users.resetPassword') %></button>
+                  </form>
+                </div>
+              </details>
+            <% } else { %>
+              <span class="muted">—</span>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/admin-foot') %>

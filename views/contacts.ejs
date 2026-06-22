@@ -1,0 +1,40 @@
+<%- include('partials/head') %>
+
+<div class="contacts-page">
+  <h1 class="contacts-page__title"><%= t('contacts.title') %></h1>
+  <p class="muted contacts-page__lead"><%= t('contacts.lead') %></p>
+
+  <% if (!contacts.length) { %>
+    <div class="empty"><%= t('contacts.empty') %></div>
+  <% } else { %>
+    <div class="contacts-grid">
+      <% contacts.forEach(function(c) {
+           var position = (lang === 'ro' && c.position_ro) ? c.position_ro : c.position; %>
+        <div class="contact-card">
+          <div class="contact-card__avatar">
+            <% if (c.thumb_path || c.photo_path) { %>
+              <img src="<%= c.thumb_path || c.photo_path %>" alt="<%= c.name %>" loading="lazy" />
+            <% } else { %>
+              <span class="contact-card__initials"><%= (c.name || '?').trim().charAt(0).toUpperCase() %></span>
+            <% } %>
+          </div>
+          <div class="contact-card__body">
+            <div class="contact-card__name"><%= c.name %></div>
+            <% if (position) { %><div class="contact-card__pos"><%= position %></div><% } %>
+            <% if (c.department) { %><div class="contact-card__dept muted"><%= c.department %></div><% } %>
+            <div class="contact-card__links">
+              <% if (c.phone) { %>
+                <a class="contact-card__link" href="tel:<%= c.phone.replace(/[^+0-9]/g, '') %>">📞 <%= c.phone %></a>
+              <% } %>
+              <% if (c.email) { %>
+                <a class="contact-card__link" href="mailto:<%= c.email %>">✉️ <%= c.email %></a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/foot') %>

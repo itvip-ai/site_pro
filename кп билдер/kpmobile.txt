@@ -1,0 +1,1168 @@
+!DOCTYPE html
+html lang=ru
+head
+base target=_top
+meta harset=UTF-8
+meta name=viewport content=width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no
+title📱 КП QGROUPtitle
+style
+{box-sizingborder-box;-webkit-tap-highlight-colortransparent}
+root{--g#0E411F;--lime#7FA822;--or#E87820;--bg#f7f8f4;--card#fff;--bd#dde3d8;--mut#666}
+html,body{margin0;padding0;backgroundvar(--bg);font-family-apple-system,BlinkMacSystemFont,SF Pro Display,Segoe UI,Roboto,Arial,sans-serif;color#1a1a1a;font-size15px;line-height1.4;min-height100vh;-webkit-font-smoothingantialiased}
+body{padding-bottom80px}
+
+ HEADER 
+.hdr{positionsticky;top0;z-index50;backgroundvar(--g);color#fff;padding12px 14px;displayflex;align-itemscenter;gap10px;box-shadow0 2px 6px rgba(0,0,0,.1)}
+.hdr-logo{width34px;height34px;background#fff;colorvar(--g);border-radius7px;displayflex;align-itemscenter;justify-contentcenter;font-weightbold;font-size11px;line-height1;flex-directioncolumn;flex-shrink0}
+.hdr-logo small{font-size6px;colorvar(--lime);margin-top1px;letter-spacing.5px}
+.hdr-title{flex1;min-width0}
+.hdr-title b{displayblock;font-size14px;font-weightbold;line-height1.2}
+.hdr-title span{font-size11px;color#9bb09f;displayblock;margin-top1px}
+.hdr-lang-wrap{displayflex;gap0;backgroundrgba(255,255,255,.15);border-radius7px;padding2px;border1px solid rgba(255,255,255,.25);flex-shrink0}
+.hdr-lang-wrap .lng{padding6px 10px;bordernone;backgroundnone;colorrgba(255,255,255,.7);font-size11px;font-weightbold;cursorpointer;border-radius5px;font-familyinherit;min-width32px}
+.hdr-lang-wrap .lng.on{background#fff;colorvar(--g)}
+
+ SECTION 
+.sec{backgroundvar(--card);margin10px;border-radius12px;padding14px;box-shadow0 1px 3px rgba(0,0,0,.05)}
+.sec-hdr{displayflex;align-itemscenter;gap8px;margin-bottom12px;font-size15px;font-weightbold;colorvar(--g)}
+.sec-hdr .ico{font-size18px}
+
+ FIELDS 
+.fld{margin-bottom11px}
+.fldlast-child{margin-bottom0}
+label.lab{displayblock;font-size11px;font-weightbold;colorvar(--mut);text-transformuppercase;letter-spacing.04em;margin-bottom5px}
+.inp,.sel,.txt{width100%;padding12px 13px;font-size15px;border1.5px solid var(--bd);border-radius9px;background#fff;font-familyinherit;color#1a1a1a;-webkit-appearancenone;appearancenone}
+.inpfocus,.selfocus,.txtfocus{outlinenone;border-colorvar(--lime);box-shadow0 0 0 3px rgba(127,168,34,.15)}
+.sel{background-imageurl(dataimagesvg+xml;utf8,svg xmlns='httpwww.w3.org2000svg' viewBox='0 0 12 12' width='12' height='12'path d='M2 4l4 5 4-5' fill='none' stroke='%23666' stroke-width='1.5'svg);background-repeatno-repeat;background-positionright 12px center;padding-right35px}
+.txt{min-height70px;resizevertical;font-familyinherit}
+
+ TYPE SWITCHER 
+.type-sw{displayflex;gap6px;margin0 10px 10px}
+.type-sw .t{flex1;padding14px 8px;background#fff;border2px solid var(--bd);border-radius10px;font-size13px;font-weightbold;colorvar(--mut);text-aligncenter;cursorpointer;transitionall .15s}
+.type-sw .t.on{background#f2f8e6;border-colorvar(--lime);colorvar(--g)}
+.type-sw .t .e{font-size18px;displayblock;margin-bottom3px}
+
+ REGION PILLS 
+.reg{displaygrid;grid-template-columns1fr 1fr 1fr;gap6px}
+.reg .r{padding10px 6px;background#fff;border1.5px solid var(--bd);border-radius9px;text-aligncenter;cursorpointer;font-size12px}
+.reg .r.on{background#f2f8e6;border-colorvar(--lime)}
+.reg .r b{displayblock;colorvar(--g);font-size13px;margin-bottom2px}
+.reg .r span{font-size10px;colorvar(--mut);displayblock;line-height1.25}
+
+ PAINS GRID 
+.pains{displaygrid;grid-template-columns1fr 1fr;gap6px}
+.pn{padding9px 10px;background#fff;border1.5px solid var(--bd);border-radius8px;font-size12px;cursorpointer;text-aligncenter;line-height1.3;color#444}
+.pn.on{background#fff7ef;border-colorvar(--or);colorvar(--or);font-weightbold}
+
+ CASES 
+.case-grp{margin-bottom12px}
+.case-grp-h{font-size13px;font-weightbold;colorvar(--g);padding6px 0;displayflex;align-itemscenter;gap6px}
+.case-it{displayflex;background#fff;border1.5px solid var(--bd);border-radius10px;overflowhidden;margin-bottom7px;cursorpointer;positionrelative;min-height78px}
+.case-it.on{border-colorvar(--or);background#fff7ef}
+.case-it.onafter{content'✓';positionabsolute;top6px;right8px;width20px;height20px;backgroundvar(--or);color#fff;border-radius50%;font-size12px;font-weightbold;displayflex;align-itemscenter;justify-contentcenter;z-index2}
+.case-img{width90px;background-sizecover;background-positioncenter;flex-shrink0;background-color#f0f4ed;positionrelative}
+.case-badge{positionabsolute;top4px;left4px;backgroundvar(--lime);color#fff;font-size8px;font-weightbold;padding2px 6px;border-radius20px}
+.case-body{padding9px 11px;flex1;min-width0}
+.case-ct{font-weightbold;font-size12.5px;line-height1.25;margin-bottom3px}
+.case-cs{font-size10.5px;colorvar(--mut);line-height1.35;display-webkit-box;-webkit-line-clamp3;-webkit-box-orientvertical;overflowhidden}
+
+ CATALOG 
+.cat-search{width100%;padding13px 14px;font-size15px;border2px solid #d63838;border-radius9px;background#fff;margin-bottom10px;font-familyinherit;-webkit-appearancenone}
+.cat-searchfocus{outlinenone;border-color#b71c1c;box-shadow0 0 0 3px rgba(214,56,56,.18)}
+.cat-row{displayflex;gap5px;flex-wrapwrap;margin-bottom12px;padding-bottom12px;border-bottom2px dashed var(--bd);positionrelative}
+.cat-rowafter{content'▾ товары ▾';positionabsolute;bottom-9px;left50%;transformtranslateX(-50%);backgroundvar(--card);colorvar(--lime);font-size9px;font-weightbold;padding0 10px;letter-spacing.06em}
+.cbt{padding7px 12px;border1.5px solid var(--bd);border-radius18px;font-size11.5px;background#fff;colorvar(--mut);font-weightbold;cursorpointer;white-spacenowrap}
+.cbt.on{backgroundvar(--g);color#fff;border-colorvar(--g)}
+.cat-items{max-height280px;overflow-yauto;padding8px;background#fafbf7;border1px solid #eef2e8;border-radius9px;-webkit-overflow-scrollingtouch}
+.led-block{margin12px 0;padding12px;background#fff8e8;border1.5px solid #f5d56d;border-radius10px}
+.led-title{font-size12px;font-weightbold;color#7a5810;margin-bottom10px;displayflex;align-itemscenter;gap6px}
+.led-grid{displaygrid;grid-template-columns1fr 1fr;gap8px}
+.led-grid .fld{margin-bottom0}
+.led-grid label.lab{font-size10px;margin-bottom3px}
+.led-grid .inp{padding9px 11px;font-size13px}
+.ci{displayflex;justify-contentspace-between;align-itemscenter;padding9px 11px;border1px solid var(--bd);background#fff;border-radius7px;margin-bottom5px;cursorpointer;font-size12px}
+.cilast-child{margin-bottom0}
+.ci .cn{flex1;font-weight500;margin-right6px;line-height1.3}
+.ci .cm{colorvar(--mut);font-size10.5px;margin-right6px;font-familymonospace}
+.ci .cp{colorvar(--lime);font-weightbold;font-size12.5px;white-spacenowrap}
+
+ ROWS — товарыработы 
+.row{background#fff;border1.5px solid var(--bd);border-radius10px;padding11px;margin-bottom8px}
+.row .r-name{font-size13px;font-weightbold;margin-bottom6px}
+.row-grid{displaygrid;grid-template-columns60px 60px 1fr 80px;gap6px;align-itemscenter;margin-bottom6px}
+.row-grid input,.row-grid select{padding8px 9px;font-size13px;border1px solid var(--bd);border-radius6px;background#fff;width100%;-webkit-appearancenone;font-familyinherit}
+.row-tot{displayflex;justify-contentspace-between;align-itemscenter;padding-top8px;border-top1px solid #eef2e8;font-size13px}
+.row-tot .lbl{colorvar(--mut);font-size11px}
+.row-tot .v{font-weightbold;colorvar(--g);font-size15px}
+.row-del{backgroundnone;bordernone;color#c33;font-size11px;cursorpointer;padding4px 6px}
+.add-row{width100%;padding13px;background#f2f8e6;border1.5px dashed var(--lime);border-radius10px;colorvar(--g);font-weightbold;font-size13px;cursorpointer;margin-top6px}
+
+ MANAGER CARD 
+.mgr-card{displayflex;align-itemscenter;gap10px;padding11px;background#f2f8e6;border1.5px solid var(--lime);border-radius10px}
+.mgr-init{width42px;height42px;border-radius50%;backgroundvar(--g);color#fff;displayflex;align-itemscenter;justify-contentcenter;font-weightbold;font-size14px;flex-shrink0}
+.mgr-info{flex1;min-width0}
+.mgr-info b{displayblock;font-size14px;line-height1.2}
+.mgr-info span{displayblock;font-size11px;colorvar(--mut);line-height1.3;margin-top2px}
+.mgr-change{font-size11px;colorvar(--lime);backgroundnone;bordernone;cursorpointer;padding6px 0;font-weightbold;text-decorationunderline}
+
+ TOTAL CARD 
+.tot-card{backgroundvar(--g);color#fff;border-radius12px;padding16px;margin10px}
+.tot-row{displayflex;justify-contentspace-between;align-itemsbaseline;margin-bottom6px}
+.tot-rowlast-child{margin-bottom0}
+.tot-row .l{font-size12px;color#DDE8C0}
+.tot-row .v{font-size16px;font-weightbold}
+.tot-row.big .v{font-size26px}
+.tot-row .v.strike{text-decorationline-through;color#9bb09f;font-size14px;font-weightnormal}
+
+ PREVIEW 
+.pv-card{background#fff;border-radius12px;margin10px;overflowhidden;box-shadow0 1px 4px rgba(0,0,0,.06)}
+.pv-hero{backgroundvar(--g);padding18px 16px;color#fff}
+.pv-hero h1{margin0;font-size17px;line-height1.2}
+.pv-hero .pv-sub{font-size11px;color#DDE8C0;margin-top5px}
+.pv-hero .pv-meta{font-size10px;color#9bb09f;margin-top8px}
+.pv-body{padding14px}
+.pv-h{font-size13px;font-weightbold;colorvar(--g);margin0 0 4px}
+.pv-line{height2.5px;backgroundvar(--lime);width34px;margin0 0 10px}
+.pv-sec{margin-bottom16px}
+.pv-card-info{background#f8f9f5;border1px solid var(--bd);border-radius7px;padding10px 12px;margin-bottom6px}
+.pv-card-info .pv-lab{font-size9px;colorvar(--lime);text-transformuppercase;letter-spacing.07em;font-weightbold}
+.pv-card-info b{displayblock;font-size13px;margin-top3px}
+.pv-card-info span{displayblock;font-size11px;colorvar(--mut);margin-top2px}
+.pv-pain{displaygrid;grid-template-columns1fr;gap0;margin-bottom5px;border-radius7px;overflowhidden}
+.pv-pain .pp{backgroundvar(--g);color#fff;padding9px 12px;font-size12px;font-weightbold}
+.pv-pain .ps{background#f8f9f5;padding9px 12px;font-size11.5px;color#444;border1px solid var(--bd);border-topnone}
+.pv-tbl{width100%;border-collapsecollapse;font-size11.5px;margin-bottom8px}
+.pv-tbl th{backgroundvar(--g);color#fff;padding7px 8px;font-size9.5px;text-alignleft;text-transformuppercase;letter-spacing.04em}
+.pv-tbl td{padding7px 8px;border-bottom1px solid #eef2e8}
+.pv-tbl trnth-child(even) td{background#fafbf7}
+.pv-tbl .num{text-alignright;font-weightbold;colorvar(--g)}
+.pv-row-item{background#fff;border1px solid var(--bd);border-radius8px;padding10px;margin-bottom6px;font-size12px}
+.pv-row-item .pr-name{font-weightbold;color#1a1a1a;font-size13px;margin-bottom3px}
+.pv-row-item .pr-m{font-size10.5px;colorvar(--mut);font-familymonospace;margin-bottom5px}
+.pv-row-item .pr-tot{displayflex;justify-contentspace-between;padding-top5px;border-top1px dashed #eef2e8;font-size11px}
+.pv-row-item .pr-tot .v{font-weightbold;colorvar(--g);font-size13px}
+.pv-case{displayflex;background#fff;border1px solid var(--bd);border-radius8px;overflowhidden;margin-bottom7px}
+.pv-case .ci-img{width80px;background-sizecover;background-positioncenter;flex-shrink0;background-color#f0f4ed;positionrelative}
+.pv-case .ci-img .b{positionabsolute;top4px;left4px;backgroundvar(--lime);color#fff;font-size8px;font-weightbold;padding2px 5px;border-radius18px}
+.pv-case .ci-body{padding9px 11px;flex1;min-width0}
+.pv-case .ci-t{font-weightbold;font-size12px;colorvar(--g);margin-bottom3px;line-height1.25}
+.pv-case .ci-s{font-size10.5px;color#444;line-height1.4}
+.pv-case .ci-u{font-size9.5px;colorvar(--lime);margin-top4px;displayblock;text-decorationnone;word-breakbreak-all}
+.pv-tot{backgroundvar(--g);color#fff;border-radius10px;padding14px 16px;margin10px 0}
+.pv-tot .pt-l{font-size10px;color#DDE8C0;text-transformuppercase;letter-spacing.06em}
+.pv-tot .pt-v{font-size24px;font-weightbold;margin-top3px}
+.pv-tot .pt-orig{font-size12px;color#9bb09f;text-decorationline-through;margin-top2px}
+.pv-cond{displaygrid;grid-template-columns1fr 1fr;gap6px}
+.pv-cond .c{background#f8f9f5;border1px solid var(--bd);border-radius7px;padding9px 8px;text-aligncenter}
+.pv-cond .c .ico{font-size16px;line-height1}
+.pv-cond .c .v{font-size11px;font-weightbold;colorvar(--g);margin-top3px;line-height1.2}
+.pv-cond .c .lab{font-size9px;colorvar(--mut);margin-top2px}
+.pv-foot{backgroundvar(--g);color#fff;padding16px;border-top2px solid var(--lime);border-radius0 0 12px 12px}
+.pv-foot b{font-size13px;displayblock}
+.pv-foot .role{font-size11px;color#DDE8C0;margin-top2px}
+.pv-foot .ph{font-size12px;color#fff;margin-top8px}
+.pv-foot .ph .lab{colorvar(--lime);font-weightbold}
+.pv-foot .ad{font-size10.5px;color#DDE8C0;margin-top8px;line-height1.4}
+
+ SHARE BUTTONS 
+.share-grid{displaygrid;grid-template-columns1fr 1fr 1fr;gap8px;margin10px}
+.share-btn{padding14px 8px;border-radius10px;font-size12px;font-weightbold;text-aligncenter;cursorpointer;bordernone;color#fff;font-familyinherit}
+.share-btn .e{font-size22px;displayblock;margin-bottom5px}
+.sb-pdf{background#E87820}
+.sb-em{background#1a73e8}
+.sb-cp{background#5f6368}
+
+ BOTTOM NAV 
+.bot-nav{positionfixed;bottom0;left0;right0;background#fff;border-top1px solid var(--bd);displayflex;z-index100;padding-bottomenv(safe-area-inset-bottom)}
+.bot-nav .bn{flex1;padding9px 4px;text-aligncenter;bordernone;backgroundnone;cursorpointer;colorvar(--mut);font-size9.5px;font-weightbold;font-familyinherit}
+.bot-nav .bn .e{font-size18px;displayblock;line-height1;margin-bottom3px}
+.bot-nav .bn.on{colorvar(--g)}
+.bot-nav .bn.on .e{filternone}
+
+ TOP ACTIONS 
+.top-act{displayflex;gap6px;padding10px;backgroundvar(--bg);positionsticky;top58px;z-index40;border-bottom1px solid var(--bd)}
+.top-act .act{flex1;padding9px 6px;background#fff;border1.5px solid var(--bd);border-radius8px;font-size11px;font-weightbold;color#444;cursorpointer;font-familyinherit;text-aligncenter}
+.top-act .act.primary{backgroundvar(--g);color#fff;border-colorvar(--g)}
+.top-act .act .e{displayblock;font-size15px;line-height1;margin-bottom3px}
+
+ PAGE 
+.page{displaynone}
+.page.on{displayblock}
+
+ MODAL — выбор менеджера 
+.modal-bg{positionfixed;inset0;backgroundrgba(0,0,0,.55);z-index200;displaynone;align-itemsflex-end;justify-contentcenter}
+.modal-bg.on{displayflex}
+.modal{background#fff;width100%;max-height80vh;border-radius18px 18px 0 0;overflow-yauto;-webkit-overflow-scrollingtouch}
+.modal-h{padding14px 16px;font-size15px;font-weightbold;border-bottom1px solid var(--bd);positionsticky;top0;background#fff;displayflex;justify-contentspace-between;align-itemscenter}
+.modal-h .x{backgroundnone;bordernone;font-size22px;colorvar(--mut);cursorpointer;padding0;line-height1}
+.modal-list{padding6px}
+.modal-mgr{displayflex;align-itemscenter;gap11px;padding11px;border-bottom1px solid #eef2e8;cursorpointer}
+.modal-mgrlast-child{border-bottomnone}
+.modal-mgr .mi{width38px;height38px;border-radius50%;backgroundvar(--g);color#fff;displayflex;align-itemscenter;justify-contentcenter;font-weightbold;font-size13px;flex-shrink0}
+.modal-mgr .md{flex1;min-width0}
+.modal-mgr .md b{displayblock;font-size14px}
+.modal-mgr .md span{displayblock;font-size11px;colorvar(--mut);margin-top1px}
+
+ TOAST 
+.toast{positionfixed;bottom90px;left50%;transformtranslateX(-50%);backgroundvar(--g);color#fff;padding10px 18px;border-radius25px;font-size13px;font-weightbold;displaynone;z-index300;border-left3px solid var(--lime);max-width90%;text-aligncenter}
+
+ LOADING 
+.loading{positionfixed;inset0;backgroundrgba(255,255,255,.95);z-index400;displaynone;flex-directioncolumn;align-itemscenter;justify-contentcenter}
+.loading.on{displayflex}
+.spin{width42px;height42px;border3px solid #eee;border-top-colorvar(--g);border-radius50%;animations 0.8s linear infinite}
+.loading p{margin-top14px;colorvar(--g);font-weightbold;font-size13px}
+@keyframes s{to{transformrotate(360deg)}}
+
+ SAVED PILLS 
+.saved{padding0 10px;displayflex;gap6px;overflow-xauto;-webkit-overflow-scrollingtouch;margin-bottom8px;scrollbar-widthnone}
+.saved-webkit-scrollbar{displaynone}
+.stag{displayinline-flex;align-itemscenter;gap6px;background#fff;border1.5px solid var(--bd);border-radius18px;padding6px 11px;font-size11px;white-spacenowrap;cursorpointer;flex-shrink0}
+.stagactive{background#f2f8e6}
+.stag .sx{color#c33;font-weightbold;font-size14px;padding0 2px}
+
+@media print{
+  .hdr,.top-act,.bot-nav,.share-grid,.saved,.modal-bg,.toast,.loading,.type-sw,.page{displaynone !important}
+  #pv-page{displayblock !important}
+  .sec{margin0;border-radius0;box-shadownone;background#fff}
+  body{padding0;background#fff}
+  @page{sizeA4;margin0}
+}
+style
+head
+body
+
+!-- HEADER --
+div class=hdr
+  div class=hdr-logoQsmallGROUPsmalldiv
+  div class=hdr-title
+    b id=hdr-numКП-001b
+    span id=hdr-clНовое предложениеspan
+  div
+  div class=hdr-lang-wrap
+    button class=lng on data-lng=RU onclick=setLang('RU')RUbutton
+    button class=lng data-lng=RO onclick=setLang('RO')RObutton
+  div
+div
+
+!-- TOP ACTIONS --
+div class=top-act
+  button class=act onclick=syncCat()span class=e🔄spanСинхр.button
+  button class=act onclick=newKP()span class=e➕spanНовоеbutton
+  button class=act primary onclick=saveKP()span class=e💾spanСохр.button
+div
+
+!-- SAVED KP STRIP --
+div class=saved id=saved-strip style=displaynonediv
+
+!-- TYPE SWITCHER --
+div class=type-sw id=type-sw
+  div class=t on data-type=new onclick=setType('new')span class=e🆕spanНовый клиентdiv
+  div class=t data-type=reg onclick=setType('reg')span class=e🔁spanПостоянныйdiv
+div
+
+!-- PAGE CLIENT --
+div class=page on id=p-client
+  div class=sec
+    div class=sec-hdrspan class=ico👤spanКлиент и объектdiv
+    div class=fld
+      label class=labТип объектаlabel
+      select class=sel id=cl_ty onchange=upd()
+        option value=торгового центраТорговый центрoption
+        option value=квартирыКвартираoption
+        option value=домаЧастный домoption
+        option value=офисаОфисoption
+        option value=дачиДачаoption
+        option value=магазинаМагазинoption
+        option value=складаСкладoption
+        option value=бизнес-центраБизнес-центрoption
+        option value=заводаЗавод  Производствоoption
+        option value=школылицеяШкола  Лицейoption
+        option value=детского садаДетский садoption
+        option value=госучрежденияГосучреждениеoption
+        option value=больницыклиникиБольница  Клиникаoption
+      select
+    div
+    div class=fld
+      label class=labФИО клиентаlabel
+      input class=inp id=cl_n placeholder=Андрей Попеску oninput=upd()
+    div
+    div class=fld
+      label class=labКомпания (необязательно)label
+      input class=inp id=cl_co placeholder=SRL Burcovschi oninput=upd()
+    div
+    div class=fld
+      label class=labТелефонlabel
+      input class=inp id=cl_ph type=tel placeholder=+373 XX XXX XXX oninput=upd()
+    div
+    div class=fld
+      label class=labEmaillabel
+      input class=inp id=cl_em type=email placeholder=client@example.com oninput=upd()
+    div
+    div class=fld
+      label class=labАдрес объектаlabel
+      input class=inp id=cl_ad placeholder=Str. ..., Chișinău oninput=upd()
+    div
+  div
+
+  div class=sec
+    div class=sec-hdrspan class=ico📍spanРегионdiv
+    div class=reg id=reg-rowdiv
+  div
+
+  div class=sec id=sec-pains
+    div class=sec-hdrspan class=ico⚠️spanБоли клиентаdiv
+    div class=pains id=pains-griddiv
+  div
+div
+
+!-- PAGE CASES --
+div class=page id=p-cases
+  div class=sec
+    div class=sec-hdrspan class=ico🏆spanРеализованные проектыdiv
+    p style=font-size11.5px;colorvar(--mut);margin0 0 12pxВыбери проекты, которые покажешь клиенту в КП.p
+    div id=cases-containerdiv
+  div
+div
+
+!-- PAGE GOODS --
+div class=page id=p-goods
+  div class=sec
+    div class=sec-hdrspan class=ico🛒spanКаталог товаровdiv
+    input class=cat-search id=cat-search placeholder=🔍 Поиск... oninput=searchCat()
+    div class=cat-row id=cat-rowdiv
+    div class=cat-items id=cat-itemsdiv
+    div class=led-block id=led-block style=displaynone
+      div class=led-title📺 Параметры LED-экрана (попадут в КП)div
+      div class=led-grid
+        div class=fldlabel class=labРазмер (мм)labelinput class=inp id=led_size placeholder=2880x1600 oninput=upd()div
+        div class=fldlabel class=labШаг пикселяlabelinput class=inp id=led_pitch placeholder=2,5 мм oninput=upd()div
+        div class=fldlabel class=labЯркостьlabelinput class=inp id=led_bright placeholder=500 nits oninput=upd()div
+        div class=fldlabel class=labЧастота обновл.labelinput class=inp id=led_freq placeholder=1920 Hz oninput=upd()div
+        div class=fldlabel class=labПотребл. мощностьlabelinput class=inp id=led_power placeholder=829 Втч oninput=upd()div
+        div class=fldlabel class=labРаб. температураlabelinput class=inp id=led_temp placeholder=-10° до 40° oninput=upd()div
+        div class=fldlabel class=labУгол обзораlabelinput class=inp id=led_angle placeholder=160°160° oninput=upd()div
+        div class=fldlabel class=labПлощадь экранаlabelinput class=inp id=led_area placeholder=4,61 м² oninput=upd()div
+      div
+    div
+  div
+  div class=sec
+    div class=sec-hdrspan class=ico📦spanТовары в КПdiv
+    div id=rows-listdiv
+    button class=add-row onclick=addRow()+ Добавить позициюbutton
+  div
+  div class=sec
+    div class=sec-hdrspan class=ico🔧spanРаботы и услугиdiv
+    div id=works-listdiv
+    button class=add-row onclick=addWork()+ Добавить работуbutton
+  div
+  div class=sec
+    div class=sec-hdrspan class=ico💸spanСкидкаdiv
+    div class=fld
+      label class=labОбщая скидка %label
+      input class=inp id=global-disc type=number value=0 min=0 max=50 oninput=upd()
+    div
+  div
+div
+
+!-- PAGE COND --
+div class=page id=p-cond
+  div class=sec
+    div class=sec-hdrspan class=ico👨‍💼spanМенеджерdiv
+    div class=mgr-card id=mgr-card-mobile
+      div class=mgr-init id=mgr-initdiv
+      div class=mgr-info
+        b id=mgr-name—b
+        span id=mgr-role—span
+      div
+      button class=mgr-change onclick=showMgrModal()сменитьbutton
+    div
+  div
+  div class=sec
+    div class=sec-hdrspan class=ico⚙️spanУсловияdiv
+    div class=fld
+      label class=labСрок исполненияlabel
+      input class=inp id=c_time placeholder=3–7 дней oninput=upd()
+    div
+    div class=fld
+      label class=labУсловия оплатыlabel
+      input class=inp id=c_pay value=50% предоплата, 50% при сдаче oninput=upd()
+    div
+    div class=fld
+      label class=lab⏱ Действие ценlabel
+      input class=inp id=c_validity value=48 часов oninput=upd()
+    div
+    div class=fld
+      label class=lab🔒 Конфиденциальностьlabel
+      input class=inp id=c_conf value=Конфиденциально oninput=upd()
+    div
+    div class=fld
+      label class=lab🛡 Гарантияlabel
+      input class=inp id=c_warr value=Гарантия Hikvision 3 года oninput=upd()
+    div
+    div class=fld
+      label class=labСтатус КПlabel
+      select class=sel id=c_st onchange=upd()
+        optionЧерновикoptionoptionОтправленоoption
+        optionПринятоoptionoptionОтклоненоoption
+      select
+    div
+    div class=fld
+      label class=labПримечаниеlabel
+      textarea class=txt id=c_notetextarea
+    div
+  div
+  div class=sec
+    div class=sec-hdrspan class=ico✅spanЧто включено в ценуdiv
+    p style=font-size11px;colorvar(--mut);margin0 0 10pxОтметь нужные пункты, текст можно редактировать.p
+    div id=inc-list-mobilediv
+  div
+div
+
+!-- PAGE PREVIEW --
+div class=page id=p-pv
+  div id=pv-wrapdiv
+  div class=share-grid
+    button class=share-btn sb-pdf onclick=downloadPDF()span class=e📥spanСкачать PDFbutton
+    button class=share-btn sb-em onclick=shareEmail()span class=e📧spanEmailbutton
+    button class=share-btn sb-cp onclick=shareCopy()span class=e📋spanКопир.button
+  div
+  div style=padding0 10px 16pxbutton class=add-row onclick=window.print() style=backgroundvar(--g);color#fff;border-stylesolid;border-colorvar(--g)🖨 Печать через браузерbuttondiv
+div
+
+!-- PAGE LIST --
+div class=page id=p-list
+  div class=sec
+    div class=sec-hdrspan class=ico📚spanСохранённые КПdiv
+    div id=kp-list-mobilediv
+  div
+div
+
+!-- TOTAL CARD (sticky) --
+div class=tot-card id=tot-card
+  div class=tot-row big
+    span class=lИтогоspan
+    span class=v id=tot-final$0span
+  div
+  div class=tot-row id=tot-orig-row style=displaynone
+    span class=lБез скидкиspan
+    span class=v strike id=tot-orig$0span
+  div
+div
+
+!-- MODAL выбор менеджера --
+div class=modal-bg id=mgr-modal
+  div class=modal
+    div class=modal-h
+      spanВыбрать менеджераspan
+      button class=x onclick=hideMgrModal()×button
+    div
+    div class=modal-list id=mgr-modal-listdiv
+  div
+div
+
+!-- BOTTOM NAV --
+div class=bot-nav
+  button class=bn on data-page=p-client onclick=setPage('p-client')span class=e👤spanКлиентbutton
+  button class=bn data-page=p-cases onclick=setPage('p-cases')span class=e🏆spanКейсыbutton
+  button class=bn data-page=p-goods onclick=setPage('p-goods')span class=e🛒spanТоварыbutton
+  button class=bn data-page=p-cond onclick=setPage('p-cond')span class=e⚙️spanУсловияbutton
+  button class=bn data-page=p-pv onclick=setPage('p-pv')span class=e📄spanПревьюbutton
+  button class=bn data-page=p-list onclick=setPage('p-list')span class=e📚spanБазаbutton
+div
+
+!-- TOAST + LOADING --
+div class=toast id=toastdiv
+div class=loading id=loadingdiv class=spindivp id=load-msgЗагрузка...pdiv
+
+script
+ ═══════ ДАННЫЕ ═══════
+var LANG='RU',KP_TYPE='new',kpN=1,currentPage='p-client',rows=[],works=[],selRegion='center',selMgr=0,selPains={},selCases={},kpList=[],MGRS=[],CATEGORIES={};
+var DEFAULT_INCLUDED=[
+  {ontrue,ru'Проектирование',ro'Proiectare',descRU'Техническое решение, расчёт нагрузок, схема монтажа, адаптация под объект.',descRO'Soluție tehnică, calculul sarcinilor, schemă de montaj, adaptare la obiect.'},
+  {ontrue,ru'Поставка',ro'Aprovizionare',descRU'Оригинальное оборудование Hikvision со склада в Кишинёве — без задержек.',descRO'Echipament Hikvision original de pe stoc în Chișinău — fără întârzieri.'},
+  {ontrue,ru'Монтаж',ro'Montare',descRU'Установка, прокладка кабелей, подключение, аккуратная финишная отделка.',descRO'Instalare, pozarea cablurilor, conectare, finisare îngrijită.'},
+  {ontrue,ru'Пусконаладка',ro'Configurare',descRU'Настройка, тестирование системы, обучение персонала работе с оборудованием.',descRO'Setarea, testarea sistemului, instruirea personalului.'},
+  {ontrue,ru'Гарантия',ro'Garanție',descRU'3 года гарантии Hikvision + собственный сервисный центр QGROUP.',descRO'3 ani garanție Hikvision + centru de service propriu QGROUP.'}
+];
+var includedItems=JSON.parse(JSON.stringify(DEFAULT_INCLUDED));
+var USER_CTX={email'',role'guest',name'',company''};
+
+var REGIONS=[
+  {key'center',ru'Центр',ro'Centru',cities'str. Alexandru Hâjdeu 68, Chișinău'},
+  {key'north',ru'Север',ro'Nord',cities'str. M. Viteazul 65, Bălți'},
+  {key'south',ru'Юг',ro'Sud',cities'str. Fedico 39, Comrat'}
+];
+
+var CONTACTS_BY_REGION={
+  center{name'Центральный офис · Chișinău',addr'Mun. Chișinău, str. Alexandru Hâjdeu 68',ph'+373 79 885 000',em'info@qgroup.md'},
+  north {name'Филиал Север · Bălți',addr'or. Bălți, str. M. Viteazul 65',ph'+373 79 885 000',em'info@qgroup.md'},
+  south {name'Филиал Юг · Comrat',addr'or. Comrat, str. Fedico 39',ph'+373 79 885 000',em'info@qgroup.md'}
+};
+
+var PAINS=[
+  {ru'Кражи  порча',ro'Furturi  vandalism',s'Камеры 2K ColorVu 247 + детекция',sRO'Camere 2K ColorVu 247 + detecție'},
+  {ru'Контроль персонала',ro'Control personal',s'СКУД + биометрия + отчёты',sRO'Control acces + biometrie + rapoarte'},
+  {ru'Подозрит. посетители',ro'Vizitatori suspecți',s'Аналитика лиц + список',sRO'Analiză facială + listă'},
+  {ru'Проверка моментов',ro'Verificare evenimente',s'NVR с архивом 60+ дней',sRO'NVR cu arhivă 60+ zile'},
+  {ru'Объект без присмотра',ro'Obiect nesupravegheat',s'Push-уведомления + мониторинг',sRO'Notificări push + monitorizare'},
+  {ru'Удалённый просмотр',ro'Vizualizare la distanță',s'Hik-Connect + мобильный доступ',sRO'Hik-Connect + acces mobil'}
+];
+
+var CASES_GROUPS=[
+  {id'video',titleRU'Видеонаблюдение',titleRO'Supraveghere Video',ico'🎥',cases[
+    {id'body_v',badge'INTERIOR',ru'Body-камеры с архивом',ro'Body camere cu arhivă',subRU'Носимые камеры с централизованной записью и управлением.',subRO'Body camere cu înregistrare centralizată.',img'httpsqhub.mduploadresize_cacheiblockad40c01bkz31ka1j4e1jza3u3t0qfa3c2dl570_369_0camere_de_corp_-_1_.png',url'httpsqhub.mdhistorysupraveghere-videocamere-de-corp-cu-posibilitatea-nregistr-rii-i-vizualiz-rii-arhivelor-n-mod-centralizat-administrare'},
+    {id'solar_v',badge'EXTERIOR',ru'Парк фотовольтаики',ro'Parc fotovoltaic',subRU'Безопасность парка солнечных панелей периметр + аналитика.',subRO'Securitate parc solar perimetru + analiză.',img'httpsqhub.mduploadresize_cacheiblockbad3s5fxbej2e0bzuo2mb3irkw3ofm9biox570_369_0solar-_1_.png',url'httpsqhub.mdhistorysupraveghere-videoparcul-de-panouri-fotovoltaice'},
+    {id'port_v',badge'EXTERIOR',ru'Порт Джурджулешты',ro'Port Giurgiulești',subRU'Видеоконтроль весового комплекса в порту.',subRO'Control video complex de cântărire.',img'httpsqhub.mduploadresize_cacheiblockba9l41ucelyl9mi7a0if212gmodpsdgz8fx570_369_0port-_1_.png',url'httpsqhub.mdhistorysupraveghere-videoportul-liber-interna-ional-giurgiule-ti'},
+    {id'beer_v',badge'INTERIOR',ru'Beermaster (Бэлць)',ro'Beermaster (Bălți)',subRU'Модернизация видеонаблюдения пивоварни.',subRO'Modernizare supraveghere fabrică de bere.',img'httpsqhub.mduploadresize_cacheiblock69ey2gkmmpoxjr2yq4usgilqk64vmx34jhz570_369_0beer-_1_.png',url'httpsqhub.mdhistorysupraveghere-videofabrica-de-bere-beermaster-din-b-l-i'}
+  ]},
+  {id'led',titleRU'LED-экраны',titleRO'LED Ecrane',ico'📺',cases[
+    {id'digital_l',badge'INTERIOR',ru'Digital Park',ro'Digital Park',subRU'LED-экран в конференц-зале хаба.',subRO'Ecran LED sala de conferință.',img'httpsqhub.mduploadiblock8e6ubke1iurftcho2qj56ljp94r8on8o3zsdigital_park-_1_.png',url'httpsqhub.mdhistoryled-ecraneecran-led-pentru-sala-de-conferinta-digital-park'},
+    {id'nero_l',badge'INTERIOR',ru'NERO',ro'NERO',subRU'Цифровая витрина магазина.',subRO'Vitrină digitală magazin.',img'httpsqhub.mduploadiblockf585ydki41zucy34p7v0lm743aickos5jz4NERO.png',url'httpsqhub.mdhistoryled-ecranevitrina-digitala-pentru-magazinul-nero-din-chisinau'},
+    {id'multisport_l',badge'INTERIOR',ru'Multisport MallDova',ro'Multisport MallDova',subRU'LED-витрина в MallDova.',subRO'Vitrină LED MallDova.',img'httpsqhub.mduploadiblockbe80zjpx2lgme2trqop0pt2xstzyjf55rfamultisport.png',url'httpsqhub.mdhistoryled-ecraneconsolidarea-vitrinei-magazinului-ecran-led-pentru-multisport-n-malldova'},
+    {id'pereflex_l',badge'EXTERIOR',ru'Pereflex (фасад)',ro'Pereflex (fațadă)',subRU'Уличный LED-экран на фасаде.',subRO'Ecran LED de exterior.',img'httpsqhub.mduploadiblock7c9cs1vlksic1n7gkcjb9fy86hu1hbhz7kdDizayn-bez-nazvaniya.png',url'httpsqhub.mdhistoryled-ecranecum-a-transformat-un-ecran-led-de-exterior-fatada-pereflex-intro-vitrina-publicitara'},
+    {id'plitka_l',badge'INTERIOR',ru'Plitka.md',ro'Plitka.md',subRU'LED в шоуруме керамики.',subRO'LED showroom ceramică.',img'httpsqhub.mduploadiblockbe1i9ne3xp1f6blou81oss01cw484clbno3Dizayn-bez-nazvaniya-_2_.png',url'httpsqhub.mdhistoryled-ecranecum-a-transformat-un-ecran-led-interiorul-showroom-ului-de-ceramic-plitka-md'},
+    {id'babyliss_l',badge'INTERIOR',ru'BabyLiss',ro'BabyLiss',subRU'LED-решение для магазина.',subRO'Soluție LED magazin.',img'httpsqhub.mduploadresize_cacheiblock2e3qdpl9x5k0y79z9j0ct4f9g9dyx9s41vp570_369_0babiliss-.png',url'httpsqhub.mdhistoryled-ecranevizibilitate-maxim-pentru-brand-solu-ie-led-inovatoare-pentru-magazinul-babyliss'}
+  ]},
+  {id'access',titleRU'Контроль доступа',titleRO'Control Access',ico'🔐',cases[
+    {id'office_a',badge'INTERIOR',ru'Офис Face ID',ro'Birou Face ID',subRU'Биометрия + учёт времени.',subRO'Biometrie + pontaj.',img'httpsqhub.mduploadiblockcb00288fyj1t0b1q8iqn2khp9t77awupzlfacces-_1_-_1_.png',url'httpsqhub.mdhistorycontrol-access'},
+    {id'factory_a',badge'INTERIOR',ru'Завод турникеты',ro'Fabrică turnichete',subRU'Турникеты + биометрия + отчёты.',subRO'Turnichete + biometrie.',img'httpsqhub.mduploadiblockcb00288fyj1t0b1q8iqn2khp9t77awupzlfacces-_1_-_1_.png',url'httpsqhub.mdhistorycontrol-access'},
+    {id'hotel_a',badge'INTERIOR',ru'Отель замки',ro'Hotel încuietori',subRU'Электронные замки и мобильные ключи.',subRO'Încuietori electronice.',img'httpsqhub.mduploadiblockcb00288fyj1t0b1q8iqn2khp9t77awupzlfacces-_1_-_1_.png',url'httpsqhub.mdhistorycontrol-access'},
+    {id'parking_a',badge'EXTERIOR',ru'Паркинг ANPR',ro'Parcare ANPR',subRU'ANPR + шлагбаум + касса.',subRO'ANPR + barieră + casă.',img'httpsqhub.mduploadiblockcb00288fyj1t0b1q8iqn2khp9t77awupzlfacces-_1_-_1_.png',url'httpsqhub.mdhistorycontrol-access'}
+  ]}
+];
+
+ ═══════ УТИЛИТЫ ═══════
+function g(id){var el=document.getElementById(id);return elel.value'';}
+function sv(id,val){var el=document.getElementById(id);if(el)el.value=val'';}
+function ex2(s){var d=document.createElement('div');d.textContent=s'';return d.innerHTML;}
+function ex(s){return(s'').replace(g,'&quot;').replace(g,'&lt;');}
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.style.display='block';setTimeout(function(){el.style.display='none';},2500);}
+function showLoading(msg){document.getElementById('load-msg').textContent=msg'Загрузка...';document.getElementById('loading').classList.add('on');}
+function hideLoading(){document.getElementById('loading').classList.remove('on');}
+
+ ═══════ НАВИГАЦИЯ ═══════
+function setPage(p){
+  currentPage=p;
+  document.querySelectorAll('.page').forEach(function(el){el.classList.toggle('on',el.id===p);});
+  document.querySelectorAll('.bot-nav .bn').forEach(function(el){el.classList.toggle('on',el.dataset.page===p);});
+  var tot=document.getElementById('tot-card');
+  if(p==='p-pv'p==='p-list')tot.style.display='none';else tot.style.display='block';
+  var typeSw=document.getElementById('type-sw');
+  if(p==='p-pv'p==='p-list')typeSw.style.display='none';else typeSw.style.display='flex';
+  if(p==='p-pv')renderPV();
+  if(p==='p-list')renderList();
+  window.scrollTo(0,0);
+}
+
+function setType(t){
+  KP_TYPE=t;
+  document.querySelectorAll('.type-sw .t').forEach(function(el){el.classList.toggle('on',el.dataset.type===t);});
+  var pSec=document.getElementById('sec-pains');
+  if(pSec)pSec.style.display=(t==='new')'block''none';
+  upd();
+}
+
+function setLang(l){
+  LANG=l;
+  document.querySelectorAll('.hdr-lang-wrap .lng').forEach(function(el){el.classList.toggle('on',el.dataset.lng===l);});
+  initRegions();initPains();initCases();renderIncludedMobile();
+  upd();
+}
+
+function renderIncludedMobile(){
+  var c=document.getElementById('inc-list-mobile');if(!c)return;
+  c.innerHTML='';
+  includedItems.forEach(function(it,i){
+    var d=document.createElement('div');
+    d.style.cssText='background#fff;border1.5px solid '+(it.on'#7FA822''#dde3d8')+';border-radius9px;padding11px;margin-bottom7px;transitionborder-color .15s';
+    var titleKey=LANG==='RU''ru''ro';
+    var descKey=LANG==='RU''descRU''descRO';
+    d.innerHTML=
+      'div style=displayflex;align-itemscenter;gap9px;margin-bottom8px'+
+        'input type=checkbox '+(it.on'checked''')+' onchange=includedItems['+i+'].on=this.checked;renderIncludedMobile() style=width22px;height22px;cursorpointer;accent-color#7FA822;flex-shrink0'+
+        'input value='+ex(it[titleKey])+' placeholder=Название пункта onchange=includedItems['+i+'][''+titleKey+'']=this.value style=flex1;padding7px 10px;border1px solid var(--bd);border-radius6px;font-weightbold;font-size13px;font-familyinherit'+
+      'div'+
+      'textarea placeholder=Описание пункта oninput=includedItems['+i+'][''+descKey+'']=this.value style=width100%;min-height55px;padding8px 10px;border1px solid var(--bd);border-radius6px;font-size11.5px;font-familyinherit;resizevertical;color'+(it.on'#1a1a1a''#aaa')+''+ex2(it[descKey])+'textarea';
+    c.appendChild(d);
+  });
+}
+
+ ═══════ РЕГИОН ═══════
+function initRegions(){
+  var c=document.getElementById('reg-row');c.innerHTML='';
+  REGIONS.forEach(function(r){
+    var d=document.createElement('div');d.className='r'+(r.key===selRegion' on''');
+    d.innerHTML='b'+(LANG==='RU'r.rur.ro)+'bspan'+r.cities+'span';
+    d.onclick=function(){selRegion=r.key;initRegions();upd();};
+    c.appendChild(d);
+  });
+}
+
+ ═══════ БОЛИ ═══════
+function initPains(){
+  var c=document.getElementById('pains-grid');c.innerHTML='';
+  PAINS.forEach(function(p,i){
+    var d=document.createElement('div');d.className='pn'+(selPains[i]' on''');
+    d.textContent=LANG==='RU'p.rup.ro;
+    d.onclick=function(){if(selPains[i])delete selPains[i];else selPains[i]=true;initPains();upd();};
+    c.appendChild(d);
+  });
+}
+function ap(){return PAINS.filter(function(p,i){return selPains[i];});}
+
+ ═══════ КЕЙСЫ ═══════
+function initCases(){
+  var c=document.getElementById('cases-container');c.innerHTML='';
+  CASES_GROUPS.forEach(function(grp){
+    var w=document.createElement('div');w.className='case-grp';
+    var h=document.createElement('div');h.className='case-grp-h';
+    h.innerHTML='span'+grp.ico+'span'+(LANG==='RU'grp.titleRUgrp.titleRO);
+    w.appendChild(h);
+    grp.cases.forEach(function(cs){
+      var d=document.createElement('div');d.className='case-it'+(selCases[cs.id]' on''');
+      var title=LANG==='RU'cs.rucs.ro;
+      var sub=LANG==='RU'cs.subRUcs.subRO;
+      d.innerHTML='div class=case-img style=background-imageurl(''+cs.img+'')'+(cs.badge'div class=case-badge'+cs.badge+'div''')+'divdiv class=case-bodydiv class=case-ct'+ex2(title)+'divdiv class=case-cs'+ex2(sub)+'divdiv';
+      d.onclick=function(){if(selCases[cs.id])delete selCases[cs.id];else selCases[cs.id]=true;initCases();};
+      w.appendChild(d);
+    });
+    c.appendChild(w);
+  });
+}
+
+ ═══════ МЕНЕДЖЕРЫ ═══════
+function renderMgrCard(){
+  var m=MGRS[selMgr];if(!m){sv('mgr-name','—');sv('mgr-role','—');return;}
+  document.getElementById('mgr-init').textContent=m.init;
+  document.getElementById('mgr-init').style.background=m.color;
+  document.getElementById('mgr-name').textContent=m.name;
+  document.getElementById('mgr-role').textContent=m.role;
+}
+
+function showMgrModal(){
+  var list=document.getElementById('mgr-modal-list');list.innerHTML='';
+  MGRS.forEach(function(m){
+    var d=document.createElement('div');d.className='modal-mgr';
+    d.innerHTML='div class=mi style=background'+m.color+''+m.init+'divdiv class=mdb'+ex2(m.name)+'bspan'+ex2(m.role)+' · '+ex2(m.ph)+'spandiv';
+    d.onclick=function(){selMgr=m.id;renderMgrCard();hideMgrModal();upd();};
+    list.appendChild(d);
+  });
+  document.getElementById('mgr-modal').classList.add('on');
+}
+function hideMgrModal(){document.getElementById('mgr-modal').classList.remove('on');}
+
+ ═══════ КАТАЛОГ ═══════
+function isLEDCategory(c){return c&&(c.toLowerCase().indexOf('led')=0c.toLowerCase().indexOf('лед')=0c.toLowerCase().indexOf('экран')=0);}
+
+function toggleLEDBlock(cat){
+  var el=document.getElementById('led-block');
+  if(el)el.style.display=isLEDCategory(cat)'block''none';
+}
+
+function initCat(){
+  var cr=document.getElementById('cat-row');cr.innerHTML='';
+  var cats=Object.keys(CATEGORIES);
+  if(!cats.length){cr.innerHTML='div style=font-size11px;color#888;padding10pxКаталог пуст. Нажми «🔄 Синхр.» для загрузки.div';return;}
+  cats.forEach(function(cat,i){
+    var d=document.createElement('div');d.className='cbt'+(i===0' on''');
+    d.textContent=cat;d.onclick=function(){
+      document.querySelectorAll('.cbt').forEach(function(b){b.classList.remove('on');});
+      d.classList.add('on');renderCatItems(CATEGORIES[cat]);
+      toggleLEDBlock(cat);
+    };
+    cr.appendChild(d);
+  });
+  if(cats.length){renderCatItems(CATEGORIES[cats[0]]);toggleLEDBlock(cats[0]);}
+}
+
+function renderCatItems(items){
+  var ci=document.getElementById('cat-items');ci.innerHTML='';
+  (items[]).slice(0,80).forEach(function(item){
+    var d=document.createElement('div');d.className='ci';
+    d.innerHTML='span class=cn'+ex2(item.n)+'spanspan class=cm'+ex2(item.m)+'spanspan class=cp$'+item.p+'span';
+    d.onclick=function(){rows.push({nitem.n,mitem.m,q'1',u'шт.',pString(item.p),d'',sitem.p,descitem.desc'',descOpenfalse});renderRows();upd();toast('+ '+item.n);};
+    ci.appendChild(d);
+  });
+}
+
+function searchCat(){
+  var q=g('cat-search').toLowerCase();if(!q){var first=Object.keys(CATEGORIES)[0];if(first)renderCatItems(CATEGORIES[first]);return;}
+  var matched=[];
+  Object.keys(CATEGORIES).forEach(function(cat){
+    CATEGORIES[cat].forEach(function(it){
+      if(it.n.toLowerCase().indexOf(q)=0String(it.m).toLowerCase().indexOf(q)=0)matched.push(it);
+    });
+  });
+  renderCatItems(matched.slice(0,80));
+}
+
+ ═══════ ТОВАРЫ  РАБОТЫ ═══════
+function calc(r){var q=parseFloat(r.q)0,p=parseFloat(r.p)0,d=parseFloat(r.d)0,gd=parseFloat(g('global-disc'))0;var df=d0dgd;return qp(1-df100);}
+
+function renderRows(){
+  var c=document.getElementById('rows-list');c.innerHTML='';
+  rows.forEach(function(r,i){
+    r.s=calc(r);
+    var hasDesc=r.desc&&r.desc.length0;
+    var d=document.createElement('div');d.className='row';
+    d.innerHTML=
+      'input class=r-name placeholder=Наименование value='+ex(r.n)+' oninput=rows['+i+'].n=this.value;upd()'+
+      'div class=row-grid'+
+        'input value='+ex(r.q)+' placeholder=Кол inputmode=decimal oninput=rows['+i+'].q=this.value;rows['+i+'].s=calc(rows['+i+']);renderRows();upd()'+
+        'select onchange=rows['+i+'].u=this.valueoption'+(r.u==='шт.'' selected''')+'шт.optionoption'+(r.u==='м'' selected''')+'мoptionoption'+(r.u==='м²'' selected''')+'м²optionoption'+(r.u==='м³'' selected''')+'м³optionoption'+(r.u==='комп.'' selected''')+'комп.optionselect'+
+        'input value='+ex(r.m)+' placeholder=Артикул oninput=rows['+i+'].m=this.value;upd()'+
+        'input value='+ex(r.p)+' placeholder=$ inputmode=decimal oninput=rows['+i+'].p=this.value;rows['+i+'].s=calc(rows['+i+']);renderRows();upd()'+
+      'div'+
+      'button type=button onclick=toggleDesc('+i+') style=width100%;margin-top6px;padding8px;background'+(hasDesc(r.descOpen'#7FA822''#f2f8e6')'#fafafa')+';border1px solid '+(hasDesc'#7FA822''#dde3d8')+';border-radius7px;font-size11.5px;color'+(hasDesc&&r.descOpen'#fff''#0E411F')+';font-weightbold;font-familyinherit📝 '+(hasDesc(r.descOpen'Скрыть описание''Показать описание')'Добавить описание')+'button'+
+      (r.descOpen'textarea placeholder=Описание товара oninput=rows['+i+'].desc=this.value style=width100%;min-height80px;margin-top6px;padding9px;border1.5px solid #dde3d8;border-radius7px;font-size12px;font-familyinherit;resizevertical'+ex2(r.desc'')+'textarea''')+
+      'div class=row-tot style=margin-top8pxspan class=lblСкидка % input style=width50px;padding5px;border1px solid #ddd;border-radius5px;font-size12px value='+ex(r.d)+' inputmode=decimal oninput=rows['+i+'].d=this.value;rows['+i+'].s=calc(rows['+i+']);renderRows();upd()spanspan class=v$'+(r.s0).toFixed(0)+'spanbutton class=row-del onclick=rows.splice('+i+',1);renderRows();upd()удалитьbuttondiv';
+    c.appendChild(d);
+  });
+}
+function toggleDesc(i){rows[i].descOpen=!rows[i].descOpen;renderRows();}
+
+function addRow(){rows.push({n'',m'',q'1',u'шт.',p'',d'',s0,desc'',descOpenfalse});renderRows();}
+
+function renderWorks(){
+  var c=document.getElementById('works-list');c.innerHTML='';
+  works.forEach(function(w,i){
+    w.s=calc(w);
+    var d=document.createElement('div');d.className='row';
+    d.innerHTML=
+      'input class=r-name placeholder=Наименование работы value='+ex(w.n)+' oninput=works['+i+'].n=this.value;upd()'+
+      'div class=row-grid style=grid-template-columns60px 60px 1fr 80px'+
+        'input value='+ex(w.q)+' placeholder=Кол inputmode=decimal oninput=works['+i+'].q=this.value;works['+i+'].s=calc(works['+i+']);renderWorks();upd()'+
+        'select onchange=works['+i+'].u=this.valueoption'+(w.u==='шт.'' selected''')+'шт.optionoption'+(w.u==='ч'' selected''')+'чoptionoption'+(w.u==='день'' selected''')+'деньoptionoption'+(w.u==='м'' selected''')+'мoptionselect'+
+        'spanspan'+
+        'input value='+ex(w.p)+' placeholder=$ inputmode=decimal oninput=works['+i+'].p=this.value;works['+i+'].s=calc(works['+i+']);renderWorks();upd()'+
+      'div'+
+      'div class=row-totspan class=lblИтогоspanspan class=v$'+(w.s0).toFixed(0)+'spanbutton class=row-del onclick=works.splice('+i+',1);renderWorks();upd()удалитьbuttondiv';
+    c.appendChild(d);
+  });
+}
+
+function addWork(){works.push({n'',m'',q'1',u'ч',p'',d'',s0});renderWorks();}
+
+ ═══════ ИТОГО ═══════
+function totO(){var s=0;rows.forEach(function(r){s+=(parseFloat(r.q)0)(parseFloat(r.p)0);});works.forEach(function(w){s+=(parseFloat(w.q)0)(parseFloat(w.p)0);});return s;}
+function totD(){var s=0;rows.forEach(function(r){s+=calc(r);});works.forEach(function(w){s+=calc(w);});return s;}
+
+function upd(){
+  var o=totO(),d=totD();
+  document.getElementById('tot-final').textContent='$'+d.toFixed(0);
+  if(o!==d){document.getElementById('tot-orig-row').style.display='flex';document.getElementById('tot-orig').textContent='$'+o.toFixed(0);}
+  else document.getElementById('tot-orig-row').style.display='none';
+  document.getElementById('hdr-num').textContent=g('kp-num')('КП-'+String(kpN).padStart(3,'0'));
+  var cl=g('cl_n')g('cl_co');
+  document.getElementById('hdr-cl').textContent=cl'Новое предложение';
+}
+
+ ═══════ КП — СОХРАНЕНИЕ ═══════
+function getState(){
+  return {
+    numg('kp-num')('КП-'+String(kpN).padStart(3,'0')),
+    typeKP_TYPE,langLANG,datenew Date().toISOString(),
+    cl_ng('cl_n'),cl_cog('cl_co'),cl_phg('cl_ph'),cl_emg('cl_em'),cl_adg('cl_ad'),cl_tyg('cl_ty'),
+    selRegionselRegion,selMgrselMgr,
+    m_nameMGRS[selMgr]MGRS[selMgr].name'',m_roleMGRS[selMgr]MGRS[selMgr].role'',
+    m_phMGRS[selMgr]MGRS[selMgr].ph'',m_emMGRS[selMgr]MGRS[selMgr].em'',
+    selPainsselPains,selCasesselCases,rowsrows,worksworks,
+    globalDiscg('global-disc'),c_timeg('c_time'),c_payg('c_pay'),
+    c_stg('c_st'),c_noteg('c_note'),
+    c_validityg('c_validity'),c_confg('c_conf'),c_warrg('c_warr'),
+    includedItemsincludedItems,
+    led{sizeg('led_size'),pitchg('led_pitch'),brightg('led_bright'),freqg('led_freq'),powerg('led_power'),tempg('led_temp'),angleg('led_angle'),areag('led_area')},
+    totalOrig'$'+totO().toFixed(0),total'$'+totD().toFixed(0)
+  };
+}
+
+function loadKP(st){
+  if(!st)return;
+  KP_TYPE=st.type'new';setType(KP_TYPE);
+  setLang(st.lang'RU');
+  sv('cl_n',st.cl_n);sv('cl_co',st.cl_co);sv('cl_ph',st.cl_ph);sv('cl_em',st.cl_em);sv('cl_ad',st.cl_ad);
+  if(st.cl_ty)sv('cl_ty',st.cl_ty);
+  selRegion=st.selRegion'center';selMgr=st.selMgr0;
+  selPains=st.selPains{};selCases=st.selCases{};
+  rows=st.rows[];works=st.works[];
+  sv('global-disc',st.globalDisc'0');sv('c_time',st.c_time);sv('c_pay',st.c_pay);sv('c_note',st.c_note);
+  sv('c_validity',st.c_validity'48 часов');sv('c_conf',st.c_conf'Конфиденциально');sv('c_warr',st.c_warr'Гарантия Hikvision 3 года');
+  if(st.includedItems&&st.includedItems.length){includedItems=JSON.parse(JSON.stringify(st.includedItems));}else{includedItems=JSON.parse(JSON.stringify(DEFAULT_INCLUDED));}
+  renderIncludedMobile();
+  if(st.led){sv('led_size',st.led.size);sv('led_pitch',st.led.pitch);sv('led_bright',st.led.bright);sv('led_freq',st.led.freq);sv('led_power',st.led.power);sv('led_temp',st.led.temp);sv('led_angle',st.led.angle);sv('led_area',st.led.area);}
+  if(st.num)document.getElementById('hdr-num').textContent=st.num;
+  initRegions();initPains();initCases();renderRows();renderWorks();renderMgrCard();upd();
+  toast('📂 Загружено '+(st.num''));
+}
+
+function newKP(){
+  if(rows.filter(function(r){return r.n;}).length0g('cl_n')){
+    if(!confirm('Начать новое КП Несохранённые данные будут потеряны.'))return;
+  }
+  kpN++;
+  document.getElementById('hdr-num').textContent='КП-'+String(kpN).padStart(3,'0');
+  ['cl_n','cl_co','cl_ph','cl_em','cl_ad','led_size','led_pitch','led_bright','led_freq','led_power','led_temp','led_angle','led_area'].forEach(function(id){sv(id,'');});
+  sv('cl_ty','торгового центра');
+  rows=[];works=[];selPains={};selCases={};
+  sv('global-disc','0');sv('c_time','');sv('c_note','');
+  addRow();addWork();
+  initPains();initCases();renderRows();renderWorks();upd();
+  toast('🆕 Новое КП');
+}
+
+function saveKP(){
+  if(!g('cl_n')&&!g('cl_co')){toast('❌ Заполни клиента');setPage('p-client');return;}
+  showLoading('Сохраняем...');
+  var data=getState();
+  google.script.run.withSuccessHandler(function(res){
+    hideLoading();
+    if(res&&res.success){
+      toast('✅ КП сохранено!');
+      google.script.run.withSuccessHandler(function(list){kpList=list[];renderSavedStrip();}).getKPs();
+    } else toast('❌ Ошибка');
+  }).withFailureHandler(function(e){hideLoading();toast('❌ '+e.message);}).saveKP(data);
+}
+
+function delKP(kpNum){
+  if(!confirm('Удалить '+kpNum+''))return;
+  google.script.run.withSuccessHandler(function(res){
+    if(res&&res.success){
+      google.script.run.withSuccessHandler(function(list){kpList=list[];renderSavedStrip();renderList();}).getKPs();
+      toast('🗑 Удалено');
+    }
+  }).deleteKP(kpNum);
+}
+
+function renderSavedStrip(){
+  var bar=document.getElementById('saved-strip');bar.innerHTML='';
+  if(!kpList!kpList.length){bar.style.display='none';return;}
+  bar.style.display='flex';
+  kpList.slice(0,10).forEach(function(kp){
+    var d=document.createElement('div');d.className='stag';
+    var lab=document.createElement('span');lab.textContent=(kp.num'')+(kp.name' · '+kp.name'');
+    var x=document.createElement('span');x.className='sx';x.textContent='×';
+    x.onclick=function(e){e.stopPropagation();delKP(kp.num);};
+    d.appendChild(lab);d.appendChild(x);
+    d.onclick=function(){if(kp.state)loadKP(kp.state);};
+    bar.appendChild(d);
+  });
+}
+
+function renderList(){
+  var c=document.getElementById('kp-list-mobile');c.innerHTML='';
+  if(!kpList!kpList.length){c.innerHTML='p style=text-aligncenter;color#888;font-size13px;padding20px 0Сохранённых КП пока нетp';return;}
+  kpList.forEach(function(kp){
+    var d=document.createElement('div');d.className='row';d.style.cursor='pointer';
+    d.innerHTML='div class=r-name'+ex2(kp.num)+' · '+ex2(kp.name'—')+'div'+
+      'div style=font-size11px;color#666;margin-bottom6px'+ex2(kp.date'')+' · '+ex2(kp.manager'')+'div'+
+      'div class=row-totspan class=lbl'+ex2(kp.status'')+'spanspan class=v'+ex2(kp.total'')+'spanbutton class=row-del onclick=event.stopPropagation();delKP(''+ex(kp.num)+'')удалитьbuttondiv';
+    d.onclick=function(){if(kp.state)loadKP(kp.state);setPage('p-client');};
+    c.appendChild(d);
+  });
+}
+
+ ═══════ СИНХРОНИЗАЦИЯ ═══════
+function syncCat(){
+  showLoading('Синхронизация прайса...');
+  google.script.run.withSuccessHandler(function(res){
+    hideLoading();
+    if(res&&res.success){
+      toast('✅ '+res.productsCount+' товаров');
+      google.script.run.withSuccessHandler(function(cat){
+        if(cat){loadCatToCats(cat);initCat();}
+      }).getCatalogFromSheet();
+    } else toast('❌ '+(res&&res.error'Ошибка'));
+  }).withFailureHandler(function(e){hideLoading();toast('❌ '+e.message);}).syncAll();
+}
+
+function loadCatToCats(cat){
+  CATEGORIES={};
+  cat.forEach(function(item){
+    var c=item.category'Прочее';
+    if(!CATEGORIES[c])CATEGORIES[c]=[];
+    CATEGORIES[c].push({nitem.name,mitem.code,pitem.price,descitem.desc''});
+  });
+}
+
+ ═══════ ПРЕВЬЮ ═══════
+function renderPV(){
+  var L=LANG==='RU';
+  var name=g('cl_n')'Уважаемый клиент',company=g('cl_co');
+  var displayName=company(g('cl_n')(company+' · '+g('cl_n'))company)name;
+  var TYPE_RO={'торгового центра''Centru comercial','квартиры''Apartament','дома''Casă privată','офиса''Birou','дачи''Casă de țară','магазина''Magazin','склада''Depozit','бизнес-центра''Centru de afaceri','завода''Fabrică  Producție','школылицея''Școală  Liceu','детского сада''Grădiniță','госучреждения''Instituție publică','больницыклиники''Spital  Clinică','объекта''Obiect'};
+  var typeRaw=g('cl_ty')'объекта';
+  var type=LtypeRaw(TYPE_RO[typeRaw]typeRaw);
+  var typeCap=type.charAt(0).toUpperCase()+type.slice(1);
+   Автоперевод условий и срока на RO
+  function trCond(s){
+    if(L!s)return s;
+    return s
+      .replace(Гарантия Hikvision 3 годаgi,'Garanție Hikvision 3 ani')
+      .replace(Гарантияgi,'Garanție')
+      .replace(Конфиденциальноgi,'Confidențial')
+      .replace(часовgi,'ore').replace(часаgi,'ore').replace(часgi,'oră')
+      .replace(предоплатаgi,'avans').replace(при сдачеgi,'la predare')
+      .replace(годаgi,'ani').replace(годgi,'an')
+      .replace(рабочих днейgi,'zile lucrătoare').replace(рабочих дняgi,'zile lucrătoare')
+      .replace(днейgi,'zile').replace(дняgi,'zile').replace(деньgi,'zi')
+      .replace(недел[ьи]gi,'săptămâni').replace(неделяgi,'săptămână');
+  }
+  var aap=ap();
+  var mgr=MGRS[selMgr]{};
+  var co=CONTACTS_BY_REGION[selRegion]CONTACTS_BY_REGION.center;
+  var orig=totO(),disc=totD();
+  var dateStr=new Date().toLocaleDateString(L'ru-RU''ro-MD');
+  var kpNum=g('kp-num')document.getElementById('hdr-num').textContent;
+
+  var h='div class=pv-card';
+
+   HERO
+  h+='div class=pv-heroh1'+(L'КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ''OFERTĂ COMERCIALĂ')+'h1';
+  h+='div class=pv-sub'+(L'Системы безопасности · Видеонаблюдение · СКУД · LED''Securitate · Supraveghere · Acces · LED')+'div';
+  h+='div class=pv-meta'+dateStr+' &nbsp;·&nbsp; '+ex2(kpNum)+' &nbsp;·&nbsp; www.qhub.mddivdiv';
+
+  h+='div class=pv-body';
+
+   О КОМПАНИИ
+  if(KP_TYPE==='new'){
+    h+='div class=pv-secdiv class=pv-h'+(L'О компании''Despre Noi')+'divdiv class=pv-linediv';
+    h+='p style=font-size12px;color#444;line-height1.6;margin0'+
+      (L'Компания bQGROUPb работает на рынке Молдовы с b2002 годаb. Реализовано более b10 000 проектовb. Официальный дистрибьютор Hikvision.'
+        'bQGROUPb activează din b2002b. Peste b10 000 proiecteb. Distribuitor oficial Hikvision.')+
+      'pdiv';
+  }
+
+   КЛИЕНТ  ОБЪЕКТ
+  h+='div class=pv-secdiv class=pv-h'+(L'Клиент и объект''Client și obiect')+'divdiv class=pv-linediv';
+  h+='div class=pv-card-infodiv class=pv-lab'+(L'Клиент''Client')+'divb'+ex2(displayName)+'b';
+  var cl=[g('cl_ph'),g('cl_em')].filter(Boolean).join(' · ');
+  if(cl)h+='span'+ex2(cl)+'span';
+  h+='div';
+  h+='div class=pv-card-infodiv class=pv-lab'+(L'Объект''Obiect')+'divb'+ex2(typeCap)+'b';
+  if(g('cl_ad'))h+='span'+ex2(g('cl_ad'))+'span';
+  h+='divdiv';
+
+   ЗАДАЧИ → РЕШЕНИЯ
+  if(KP_TYPE==='new'&&aap.length){
+    h+='div class=pv-secdiv class=pv-h'+(L'Задачи — решения''Obiective — soluții')+'divdiv class=pv-linediv';
+    aap.forEach(function(p){
+      h+='div class=pv-paindiv class=pp'+ex2(Lp.rup.ro)+'divdiv class=ps→ '+ex2(Lp.s(p.sROp.s))+'divdiv';
+    });
+    h+='div';
+  }
+
+   ОБОРУДОВАНИЕ — карточками
+  var vr=rows.filter(function(r){return r.n;});
+  if(vr.length){
+    h+='div class=pv-secdiv class=pv-h'+(L'Оборудование''Echipament')+'divdiv class=pv-linediv';
+    vr.forEach(function(r){
+      h+='div class=pv-row-itemdiv class=pr-name'+ex2(r.n)+'div';
+      if(r.m)h+='div class=pr-m'+ex2(r.m)+'div';
+      if(r.descOpen && r.desc){
+        h+='div style=background#f2f8e6;border-left3px solid #7FA822;padding7px 10px;border-radius0 6px 6px 0;font-size11px;color#555;line-height1.5;margin-bottom6px;white-spacepre-wrap'+ex2(r.desc)+'div';
+      }
+      h+='div class=pr-totspan'+ex2(r.q)+' '+ex2(r.u)+' × $'+r.p+'spanspan class=v$'+(r.s0).toFixed(0)+'spandivdiv';
+    });
+    h+='div';
+  }
+
+   LED ПАРАМЕТРЫ
+  var ledSpecs=[
+    [L'Размер''Dimensiune',g('led_size')],
+    [L'Шаг пикселя''Pas pixel',g('led_pitch')],
+    [L'Яркость''Luminozitate',g('led_bright')],
+    [L'Частота обновления''Frecvență',g('led_freq')],
+    [L'Потребл. мощность''Putere',g('led_power')],
+    [L'Раб. температура''Temperatură',g('led_temp')],
+    [L'Угол обзора''Unghi vizualizare',g('led_angle')],
+    [L'Площадь экрана''Suprafață ecran',g('led_area')]
+  ].filter(function(s){return s[1];});
+  if(ledSpecs.length){
+    h+='div class=pv-secdiv class=pv-h'+(L'Параметры LED-экрана''Parametri LED')+'divdiv class=pv-linediv';
+    h+='table class=pv-tbltbody';
+    ledSpecs.forEach(function(s){
+      h+='trtd style=color#666;font-weightbold;width50%'+ex2(s[0])+'tdtd style=color#1a1a1a'+ex2(s[1])+'tdtr';
+    });
+    h+='tbodytablediv';
+  }
+
+   РАБОТЫ
+  var vw=works.filter(function(w){return w.n;});
+  if(vw.length){
+    h+='div class=pv-secdiv class=pv-h'+(L'Работы''Lucrări')+'divdiv class=pv-linediv';
+    vw.forEach(function(w){
+      h+='div class=pv-row-itemdiv class=pr-name'+ex2(w.n)+'div';
+      h+='div class=pr-totspan'+ex2(w.q)+' '+ex2(w.u)+' × $'+w.p+'spanspan class=v$'+(w.s0).toFixed(0)+'spandivdiv';
+    });
+    h+='div';
+  }
+
+   ИТОГО
+  h+='div class=pv-totdiv class=pt-l'+(L'Итого без НДС''Total fără TVA')+'div';
+  if(orig!==disc)h+='div class=pt-orig$'+orig.toFixed(0)+'div';
+  h+='div class=pt-v$'+disc.toFixed(0)+'divdiv';
+
+   ЧТО ВКЛЮЧЕНО В ЦЕНУ (только для новых, только активные)
+  var activeInc=(includedItems[]).filter(function(it){return it.on;});
+  if(KP_TYPE==='new' && activeInc.length){
+    h+='div class=pv-secdiv class=pv-h'+(L'Что включено в цену''Ce include prețul')+'divdiv class=pv-linediv';
+    activeInc.forEach(function(it){
+      var title=Lit.ruit.ro;
+      var desc=Lit.descRUit.descRO;
+      h+='div style=background#fff;border1px solid var(--bd);border-radius8px;overflowhidden;margin-bottom6px';
+      h+='div style=backgroundvar(--g);color#fff;padding9px 12px;font-size12px;font-weightbold'+ex2(title)+'div';
+      h+='div style=padding9px 12px;background#f8f9f5;font-size11.5px;color#444;line-height1.5'+ex2(desc)+'div';
+      h+='div';
+    });
+    h+='div';
+  }
+
+   КЕЙСЫ
+  var hasC=false;CASES_GROUPS.forEach(function(g){g.cases.forEach(function(c){if(selCases[c.id])hasC=true;});});
+  if(KP_TYPE==='new'&&hasC){
+    h+='div class=pv-secdiv class=pv-h'+(L'Реализованные проекты''Proiecte realizate')+'divdiv class=pv-linediv';
+    CASES_GROUPS.forEach(function(grp){
+      var active=grp.cases.filter(function(c){return selCases[c.id];});if(!active.length)return;
+      h+='div style=font-size12px;font-weightbold;colorvar(--g);margin8px 0 6px'+grp.ico+' '+ex2(Lgrp.titleRUgrp.titleRO)+'div';
+      active.forEach(function(c){
+        var title=Lc.ruc.ro,sub=Lc.subRUc.subRO;
+        h+='div class=pv-casediv class=ci-img style=background-imageurl(''+ex2(c.img)+'')'+(c.badge'div class=b'+c.badge+'div''')+'div';
+        h+='div class=ci-bodydiv class=ci-t'+ex2(title)+'divdiv class=ci-s'+ex2(sub)+'div';
+        if(c.url)h+='a class=ci-u href='+ex2(c.url)+'→ '+ex2(c.url.replace(^https,'').replace($,''))+'a';
+        h+='divdiv';
+      });
+    });
+    h+='div';
+  }
+
+   УСЛОВИЯ
+  h+='div class=pv-secdiv class=pv-h'+(L'Условия''Condiții')+'divdiv class=pv-linediv';
+  h+='div class=pv-cond';
+  [['⏱',trCond(g('c_validity'))(L'48 часов''48 ore'),L'действие''valabilitate'],
+   ['💳',trCond(g('c_pay'))'5050',L'оплата''plată'],
+   ['🛡',trCond(g('c_warr'))(L'Hikvision 3 года''Hikvision 3 ani'),L'гарантия''garanție'],
+   ['🔒',trCond(g('c_conf'))(L'Конфиденциально''Confidențial'),L'для клиента''destinatar']].forEach(function(c){
+    h+='div class=cdiv class=ico'+c[0]+'divdiv class=v'+ex2(c[1])+'divdiv class=lab'+c[2]+'divdiv';
+  });
+  h+='div';
+  var noteM=g('c_note');var DEFNOTE_RU='Данное предложение конфиденциально и предназначено исключительно для указанного клиента. Цены действительны 48 часов с момента передачи КП.';var DEFNOTE_RO='Această ofertă este confidențială și destinată exclusiv clientului indicat. Prețurile sunt valabile 48 de ore de la transmiterea ofertei.';if(!L && noteM && noteM.trim()===DEFNOTE_RU)noteM=DEFNOTE_RO;if(noteM)h+='p style=font-size11px;color#888;margin-top10px;line-height1.5;font-styleitalic'+ex2(noteM)+'p';
+  h+='div';
+
+  h+='div'; pv-body
+
+   FOOTER
+  h+='div class=pv-footb'+ex2(mgr.name'—')+'b';
+  if(mgr.role)h+='div class=role'+ex2(mgr.role)+'div';
+  h+='div class=phspan class=labTelspan '+ex2(mgr.phco.ph)+'div';
+  if(mgr.em)h+='div class=phspan class=labEmailspan '+ex2(mgr.em)+'div';
+  h+='div class=ad'+ex2(co.addr)+'brwww.qhub.mddiv';
+  if(USER_CTX && USER_CTX.email){
+    h+='div style=font-size10px;color#7a9b80;margin-top10px;padding-top8px;border-top1px dashed #2a5a3a'+(L'Подготовил ''Pregătit de ')+ex2(USER_CTX.email)+'div';
+  }
+  h+='div';
+
+  h+='div';
+  document.getElementById('pv-wrap').innerHTML=h;
+}
+
+ ═══════ SHARE ═══════
+function buildShareMsg(){
+  var L=LANG==='RU';
+  var num=g('kp-num')document.getElementById('hdr-num').textContent;
+  var cl=g('cl_n')g('cl_co')'';
+  var tot='$'+totD().toFixed(0);
+  var mgr=MGRS[selMgr]{};
+  return (L'Коммерческое предложение QGROUPnn''Ofertă comercială QGROUPnn')+
+    (L'№ ''Nr ')+num+'n'+
+    (cl(L'Клиент ''Client ')+cl+'n''')+
+    (L'Сумма ''Total ')+tot+'nn'+
+    (L'Менеджер ''Manager ')+(mgr.name'')+'n'+
+    (mgr.ph(L'Тел ''Tel ')+mgr.ph+'n''')+
+    'nwww.qhub.md';
+}
+
+function downloadPDF(){
+  if(!g('cl_n')&&!g('cl_co')){toast('❌ Заполни клиента');setPage('p-client');return;}
+  var num=g('kp-num')document.getElementById('hdr-num').textContent;
+  var clientName=g('cl_n')g('cl_co')'Client';
+  showLoading('Генерируем PDF...');
+  var htmlContent=document.getElementById('pv-wrap').innerHTML;
+  google.script.run.withSuccessHandler(function(res){
+    hideLoading();
+    if(res&&res.success){
+       Открываем PDF в новой вкладке — пользователь жмёт Скачать в просмотрщике
+      window.open(res.url,'_blank');
+      toast('✅ PDF готов');
+    } else {
+      toast('❌ '+(res&&res.error'Ошибка генерации'));
+    }
+  }).withFailureHandler(function(e){hideLoading();toast('❌ '+e.message);})
+   .generatePDFFromHtml(htmlContent,num,clientName);
+}
+
+function shareEmail(){
+  var num=g('kp-num')document.getElementById('hdr-num').textContent;
+  var subject=encodeURIComponent('Коммерческое предложение QGROUP '+num);
+  var body=encodeURIComponent(buildShareMsg());
+  var to=g('cl_em')'';
+  window.location.href='mailto'+to+'subject='+subject+'&body='+body;
+}
+
+function shareCopy(){
+  var msg=buildShareMsg();
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(msg).then(function(){toast('📋 Скопировано');},function(){fallbackCopy(msg);});
+  } else fallbackCopy(msg);
+}
+function fallbackCopy(text){
+  var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('📋 Скопировано');}catch(e){toast('❌ Не удалось');}
+  document.body.removeChild(ta);
+}
+
+ ═══════ ИНИЦИАЛИЗАЦИЯ ═══════
+showLoading('Загружаем данные...');
+
+ 1. Менеджеры + автоопределение по email
+google.script.run.withSuccessHandler(function(list){
+  MGRS=list[];
+  google.script.run.withSuccessHandler(function(myMgr){
+    if(myMgr){
+       Найти в MGRS по email и сделать активным
+      var emailLow=String(myMgr.em'').toLowerCase();
+      for(var i=0;iMGRS.length;i++){
+        if(String(MGRS[i].em'').toLowerCase()===emailLow){selMgr=MGRS[i].id;break;}
+      }
+    }
+    renderMgrCard();
+  }).getMyManagerByEmail();
+}).getManagers();
+
+ 2. Каталог
+google.script.run.withSuccessHandler(function(cat){
+  if(cat&&cat.length){loadCatToCats(cat);}
+  initCat();
+}).getCatalogFromSheet();
+
+ 3. Список КП + номер
+google.script.run.withSuccessHandler(function(list){
+  kpList=list[];
+  var maxN=0;
+  kpList.forEach(function(kp){var m=String(kp.num'').match((d+));if(m){var n=parseInt(m[1],10);if(nmaxN)maxN=n;}});
+  if(maxN0){kpN=maxN+1;document.getElementById('hdr-num').textContent='КП-'+String(maxN+1).padStart(3,'0');}
+  renderSavedStrip();
+  hideLoading();
+}).getKPs();
+
+ 4. Контекст пользователя (для отображения email и аудита)
+google.script.run.withSuccessHandler(function(ctx){
+  if(ctx){USER_CTX=ctx;}
+}).getCurrentUserContext();
+
+initRegions();initPains();initCases();renderIncludedMobile();
+addRow();addRow();
+addWork();
+upd();
+script
+body
+html

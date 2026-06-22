@@ -1,0 +1,889 @@
+// ═══════════════════════════════════════════════════════════════
+// QGROUP — Конструктор КП v8.0 (Web App)
+// Файл: Code.gs
+// ═══════════════════════════════════════════════════════════════
+//
+// АРХИТЕКТУРА:
+//   SCRIPT_SS  — таблица, где живёт этот скрипт (пустая, только админ-меню)
+//   PRICE_SS   — таблица с прайсом QGROUP (читается syncAll)
+//   DATA_SS    — таблица с базой КП, менеджерами и каталогом
+//
+// Менеджеры работают через Web App URL, доступа к таблицам не имеют.
+// Скрипт выполняется от имени владельца — поэтому имеет доступ ко всем 3 таблицам.
+// ═══════════════════════════════════════════════════════════════
+
+var PRICE_SS_ID = '1GmAFrazdgQD5wc5FxB6LApxf6FxUQqpOZTrUwqc3w44';
+var DATA_SS_ID  = '1qDsng2O-EF85LWXE4GRJCnryJM-1FT_jpfTLJyT2vpM';
+
+// Суперадмин — имеет полный доступ везде, обходит все проверки
+var SUPERADMIN_EMAILS = ['itvip@qgroup.md'];
+
+// Отделы которым разрешён доступ к LED-конструктору
+var LED_ALLOWED_DEPTS = ['Manager vinzari LED', 'Project Manager'];
+
+// ═══════════════════════════════════════════════════════════════
+// WEB APP — роутинг по версиям
+// ═══════════════════════════════════════════════════════════════
+
+function doGet(e) {
+  var version = (e && e.parameter && e.parameter.v) ? e.parameter.v : 'desktop';
+  var ctx = getUserContext();
+
+  // Определяем какая группа конструктора запрошена
+  var group = 'general';   // general / led / partner
+  var device = 'desktop';  // desktop / mobile
+  var file = 'KPBuilder';
+  var title = '🛡 Конструктор КП — QGROUP';
+
+  switch (version) {
+    case 'desktop':
+      group = 'general'; device = 'desktop';
+      file = 'KPBuilder'; title = '🛡 Конструктор КП — QGROUP';
+      break;
+    case 'mobile':
+      group = 'general'; device = 'mobile';
+      file = 'KPMobile'; title = '📱 КП QGROUP';
+      break;
+    case 'led':
+      group = 'led'; device = 'desktop';
+      file = 'KPBuilder_LED'; title = '📺 LED Конструктор — QGROUP';
+      break;
+    case 'led-mobile':
+      group = 'led'; device = 'mobile';
+      file = 'KPMobile_LED'; title = '📺 LED КП QGROUP';
+      break;
+    case 'partner':
+      group = 'partner'; device = 'desktop';
+      file = 'KPBuilder_Partner'; title = '🤝 Партнёрский конструктор';
+      break;
+    case 'partner-mobile':
+      group = 'partner'; device = 'mobile';
+      file = 'KPMobile_Partner'; title = '🤝 Партнёрский конструктор';
+      break;
+  }
+
+  // ── Проверка доступа в зависимости от запрошенной группы
+  var accessOk = false;
+  if (ctx.role === 'admin') {
+    accessOk = true; // суперадмин везде
+  } else if (group === 'partner') {
+    accessOk = (ctx.role === 'partner'); // партнёрский URL — только для партнёров
+  } else if (group === 'led') {
+    // LED-конструктор — только сотрудники из разрешённых отделов
+    accessOk = (ctx.role === 'staff' && LED_ALLOWED_DEPTS.indexOf(ctx.dept) >= 0);
+  } else {
+    accessOk = (ctx.role === 'staff'); // общий — все сотрудники
+  }
+
+  if (!accessOk) {
+    return HtmlService.createHtmlOutput(buildAccessDeniedHtml(ctx.email, group))
+      .setTitle('Доступ ограничен — QGROUP');
+  }
+
+  // Логируем успешный вход
+  var groupLabel = group === 'led' ? 'LED' : (group === 'partner' ? 'Партнёр' : 'Общий');
+  var deviceLabel = device === 'mobile' ? 'Мобила' : 'Десктоп';
+  try { logEntry(ctx, groupLabel, deviceLabel); } catch(e) {}
+
+  return HtmlService.createHtmlOutputFromFile(file)
+    .setTitle(title)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+// Лог входа в конструктор
+function logEntry(ctx, groupLabel, deviceLabel) {
+  var ss = SpreadsheetApp.openById(DATA_SS_ID);
+  var sheet = ss.getSheetByName('КП_Аудит_Входы');
+  if (!sheet) {
+    sheet = ss.insertSheet('КП_Аудит_Входы');
+    sheet.getRange(1, 1, 1, 5).setValues([['Дата/Время', 'Email', 'Имя', 'Роль', 'Версия']])
+      .setBackground('#0E411F').setFontColor('#FFFFFF').setFontWeight('bold');
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 150);
+    sheet.setColumnWidth(2, 220);
+    sheet.setColumnWidth(3, 180);
+    sheet.setColumnWidth(4, 90);
+    sheet.setColumnWidth(5, 160);
+  }
+  sheet.appendRow([
+    new Date(),
+    ctx.email || '',
+    ctx.name || '',
+    ctx.role || '',
+    groupLabel + ' / ' + deviceLabel
+  ]);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// КОНТЕКСТ ПОЛЬЗОВАТЕЛЯ — кто, какие права, разрешён ли доступ
+// ═══════════════════════════════════════════════════════════════
+
+function getUserContext() {
+  var email = '';
+  try { email = String(Session.getActiveUser().getEmail() || '').toLowerCase().trim(); } catch(e) {}
+  var ctx = { email: email, allowed: false, role: 'guest', name: '', company: '', dept: '' };
+  if (!email) return ctx;
+
+  // 0) СУПЕРАДМИН — полный доступ везде, обходит все таблицы
+  for (var sa = 0; sa < SUPERADMIN_EMAILS.length; sa++) {
+    if (String(SUPERADMIN_EMAILS[sa]).toLowerCase().trim() === email) {
+      ctx.allowed = true; ctx.role = 'admin'; ctx.name = email;
+      return ctx;
+    }
+  }
+
+  // 1) Сотрудник? — есть в листе КП_Менеджеры
+  try {
+    var mgrs = getManagers() || [];
+    for (var i = 0; i < mgrs.length; i++) {
+      if (String(mgrs[i].em || '').toLowerCase().trim() === email) {
+        ctx.allowed = true; ctx.role = 'staff'; ctx.name = mgrs[i].name;
+        ctx.dept = String(mgrs[i].role || '').trim();
+        return ctx;
+      }
+    }
+  } catch(e) {}
+
+  // 2) Партнёр? — есть в листе КП_Партнёры с Активен=TRUE
+  try {
+    var partners = getPartnersFromSheet() || [];
+    for (var j = 0; j < partners.length; j++) {
+      if (String(partners[j].email || '').toLowerCase().trim() === email && partners[j].active) {
+        ctx.allowed = true; ctx.role = 'partner';
+        ctx.name = partners[j].name; ctx.company = partners[j].company;
+        return ctx;
+      }
+    }
+  } catch(e) {}
+
+  // 3) Чужой — записываем попытку в аудит
+  try { logAccessAttempt(email); } catch(e) {}
+  return ctx;
+}
+
+// HTML для отказа — пользователь увидит когда не имеет доступа
+function buildAccessDeniedHtml(email, group) {
+  var safe = String(email || '').replace(/</g,'&lt;');
+  var msg = 'Этот сервис доступен только сотрудникам и партнёрам QGROUP.';
+  if (group === 'partner') {
+    msg = 'Это партнёрская версия конструктора КП. Сотрудники QGROUP должны использовать общий конструктор.';
+  } else if (group === 'led') {
+    msg = 'LED-конструктор доступен только сотрудникам отделов: <b>Manager vinzari LED</b>, <b>Project Manager</b>.<br>Используйте общий конструктор КП.';
+  } else if (group === 'general') {
+    msg = 'Этот сервис доступен только сотрудникам QGROUP. Если вы партнёр — используйте партнёрскую ссылку.';
+  }
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>Доступ ограничен</title></head>' +
+    '<body style="margin:0;background:#0E411F;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;padding:20px;text-align:center">' +
+    '<div style="max-width:420px">' +
+    '<div style="font-size:56px;line-height:1;margin-bottom:18px">🔒</div>' +
+    '<h1 style="margin:0 0 12px;font-size:22px">Доступ ограничен</h1>' +
+    '<p style="margin:0 0 18px;color:#DDE8C0;font-size:14px;line-height:1.6">'+msg+'</p>' +
+    (email ? '<p style="margin:0 0 18px;color:#9bb09f;font-size:12px">Вы вошли как:<br><b style="color:#fff">'+safe+'</b></p>' : '') +
+    '<p style="margin:0 0 18px;color:#DDE8C0;font-size:13px;line-height:1.55">По вопросам доступа напишите на<br><a href="mailto:info@qgroup.md" style="color:#7FA822;font-weight:bold;text-decoration:none">info@qgroup.md</a></p>' +
+    '<a href="https://qhub.md" style="display:inline-block;padding:12px 22px;background:#7FA822;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;font-size:13px;margin-top:8px">Перейти на qhub.md</a>' +
+    '</div></body></html>';
+}
+
+// Лист КП_Партнёры → массив {email, name, company, active}
+function getPartnersFromSheet() {
+  try {
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = ss.getSheetByName('КП_Партнёры');
+    if (!sheet) {
+      // Создаём пустой лист с заголовками + примером
+      sheet = ss.insertSheet('КП_Партнёры');
+      sheet.getRange(1, 1, 1, 4).setValues([['Email', 'Имя', 'Компания', 'Активен']])
+        .setBackground('#0E411F').setFontColor('#FFFFFF').setFontWeight('bold');
+      sheet.setFrozenRows(1);
+      sheet.setColumnWidth(1, 220); sheet.setColumnWidth(2, 180);
+      sheet.setColumnWidth(3, 180); sheet.setColumnWidth(4, 90);
+      sheet.appendRow(['example@gmail.com', 'Иван Иванов', 'Melarux SRL', false]);
+      return [];
+    }
+    if (sheet.getLastRow() <= 1) return [];
+    var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues();
+    return data.filter(function(r){ return r[0]; }).map(function(r){
+      return {
+        email: String(r[0]).toLowerCase().trim(),
+        name: String(r[1] || '').trim(),
+        company: String(r[2] || '').trim(),
+        active: r[3] === true || String(r[3]).toUpperCase() === 'TRUE' || String(r[3]) === '1'
+      };
+    });
+  } catch(e) { return []; }
+}
+
+// Логирование попыток несанкционированного доступа
+function logAccessAttempt(email) {
+  var ss = SpreadsheetApp.openById(DATA_SS_ID);
+  var sheet = ss.getSheetByName('КП_Аудит_Доступ');
+  if (!sheet) {
+    sheet = ss.insertSheet('КП_Аудит_Доступ');
+    sheet.getRange(1, 1, 1, 2).setValues([['Дата/Время', 'Email пытавшегося']])
+      .setBackground('#0E411F').setFontColor('#FFFFFF').setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+  sheet.appendRow([new Date(), email]);
+}
+
+// Возвращает текущий контекст для клиента (вызывается из HTML)
+function getCurrentUserContext() {
+  return getUserContext();
+}
+
+// Определить менеджера по email залогиненного пользователя
+function getMyManagerByEmail() {
+  try {
+    var email = Session.getActiveUser().getEmail();
+    if (!email) return null;
+    var mgrs = getManagers();
+    if (!mgrs || !mgrs.length) return null;
+    var emailLow = email.toLowerCase().trim();
+    for (var i = 0; i < mgrs.length; i++) {
+      if (String(mgrs[i].em || '').toLowerCase().trim() === emailLow) {
+        return mgrs[i];
+      }
+    }
+    return null;
+  } catch(e) { return null; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// АДМИН-МЕНЮ — только для владельца скрипт-таблицы
+// ═══════════════════════════════════════════════════════════════
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('🛡 QGROUP — Админ')
+    .addItem('🔗 Показать все Web App URL', 'showWebAppUrl')
+    .addSeparator()
+    .addItem('🔄 Синхронизация прайса', 'syncAllFromMenu')
+    .addItem('📊 Ссылка на базу КП', 'showDataSheetLink')
+    .addItem('💰 Ссылка на прайс', 'showPriceSheetLink')
+    .addSeparator()
+    .addItem('📈 Отчёт активности', 'showActivityReport')
+    .addItem('⚙️ Настройки менеджеров', 'showManagers')
+    .addToUi();
+}
+
+function showWebAppUrl() {
+  var url = ScriptApp.getService().getUrl();
+  if (!url) {
+    SpreadsheetApp.getUi().alert('🔗 Web App URL', 'Web App ещё не развёрнут.\nНажми «Развернуть → Веб-приложение».', SpreadsheetApp.getUi().ButtonSet.OK);
+    return;
+  }
+  var msg = '═══ ВСЕ ССЫЛКИ КОНСТРУКТОРА КП ═══\n\n' +
+    '🛡 ОБЩИЙ\n' +
+    '🖥 Десктоп:\n' + url + '\n\n' +
+    '📱 Мобильный:\n' + url + '?v=mobile\n\n' +
+    '═══════════════\n' +
+    '📺 LED-ЭКРАНЫ\n' +
+    '🖥 Десктоп:\n' + url + '?v=led\n\n' +
+    '📱 Мобильный:\n' + url + '?v=led-mobile\n\n' +
+    '═══════════════\n' +
+    '🤝 ПАРТНЁРЫ\n' +
+    '🖥 Десктоп:\n' + url + '?v=partner\n\n' +
+    '📱 Мобильный:\n' + url + '?v=partner-mobile';
+  SpreadsheetApp.getUi().alert('🔗 Web App URLs', msg, SpreadsheetApp.getUi().ButtonSet.OK);
+}
+
+function showDataSheetLink() {
+  var ui = SpreadsheetApp.getUi();
+  ui.alert('📊 База КП',
+    'https://docs.google.com/spreadsheets/d/' + DATA_SS_ID + '/edit',
+    ui.ButtonSet.OK);
+}
+
+function showPriceSheetLink() {
+  var ui = SpreadsheetApp.getUi();
+  ui.alert('💰 Прайс QGROUP',
+    'https://docs.google.com/spreadsheets/d/' + PRICE_SS_ID + '/edit',
+    ui.ButtonSet.OK);
+}
+
+function syncAllFromMenu() {
+  var res = syncAll();
+  if (res.success) {
+    SpreadsheetApp.getUi().alert(
+      '✅ Синхронизация завершена!\n\n' +
+      '📋 Листов: ' + res.sheetsCount + '\n' +
+      '🛒 Товаров: ' + res.productsCount + '\n' +
+      '👤 Менеджеров: ' + res.managersCount + '\n\n' +
+      'Листы:\n• ' + res.sheetsList);
+  } else {
+    SpreadsheetApp.getUi().alert('❌ ' + res.error);
+  }
+}
+
+function showManagers() {
+  var ss = SpreadsheetApp.openById(DATA_SS_ID);
+  var sheet = getOrCreateSheetIn(ss, 'КП_Менеджеры', ['Имя', 'Отдел', 'Телефон', 'Email', 'Цвет (#hex)']);
+  sheet.getRange('C:C').setNumberFormat('@');
+  if (sheet.getLastRow() <= 1) {
+    sheet.appendRow(['Александр Иванов', 'B2B', '+373 79 885 000', 'a.ivanov@qgroup.md', '#0E411F']);
+    sheet.appendRow(['Мария Попеску', 'B2C', '+373 69 333 444', 'm.popesku@qgroup.md', '#7FA822']);
+    sheet.appendRow(['Дмитрий Лупу', 'Инженеры', '+373 69 555 666', 'd.lupu@qgroup.md', '#E87820']);
+    sheet.appendRow(['Elena Rusu', 'Vânzări', '+373 69 777 888', 'e.rusu@qgroup.md', '#6AAECC']);
+  }
+  var ui = SpreadsheetApp.getUi();
+  ui.alert('⚙️ Настройки менеджеров',
+    'Открой таблицу базы КП и перейди на лист «КП_Менеджеры»:\n\n' +
+    'https://docs.google.com/spreadsheets/d/' + DATA_SS_ID + '/edit',
+    ui.ButtonSet.OK);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ОТЧЁТ АКТИВНОСТИ — кто заходил / кто ни разу
+// ═══════════════════════════════════════════════════════════════
+
+function showActivityReport() {
+  var ss = SpreadsheetApp.openById(DATA_SS_ID);
+  var ui = SpreadsheetApp.getUi();
+
+  // Собираем все email из лога входов + считаем
+  var entriesSheet = ss.getSheetByName('КП_Аудит_Входы');
+  var stats = {}; // email -> {count, last, name}
+  if (entriesSheet && entriesSheet.getLastRow() > 1) {
+    var data = entriesSheet.getRange(2, 1, entriesSheet.getLastRow() - 1, 5).getValues();
+    data.forEach(function(r) {
+      var dt = r[0], email = String(r[1] || '').toLowerCase().trim(), name = r[2] || '';
+      if (!email) return;
+      if (!stats[email]) stats[email] = { count: 0, last: null, name: name };
+      stats[email].count++;
+      if (!stats[email].last || (dt && dt > stats[email].last)) stats[email].last = dt;
+      if (name) stats[email].name = name;
+    });
+  }
+
+  // Список всех менеджеров
+  var mgrs = getManagers() || [];
+  var tz = Session.getScriptTimeZone();
+  function fmt(d) { return d ? Utilities.formatDate(new Date(d), tz, 'dd.MM.yyyy HH:mm') : '—'; }
+
+  var active = [];
+  var inactive = [];
+
+  mgrs.forEach(function(m) {
+    var em = String(m.em || '').toLowerCase().trim();
+    if (stats[em]) {
+      active.push('✅ ' + m.name + ' — ' + stats[em].count + ' входов, посл. ' + fmt(stats[em].last));
+      delete stats[em];
+    } else {
+      inactive.push('❌ ' + m.name + ' (' + m.role + ')');
+    }
+  });
+
+  // Партнёры и прочие, которые заходили но не в списке менеджеров
+  var others = [];
+  Object.keys(stats).forEach(function(em) {
+    others.push('• ' + (stats[em].name || em) + ' (' + em + ') — ' + stats[em].count + ' входов, посл. ' + fmt(stats[em].last));
+  });
+
+  var msg = '═══ ЗАХОДИЛИ (' + active.length + ') ═══\n';
+  msg += active.length ? active.join('\n') : '(никто)';
+  msg += '\n\n═══ НИ РАЗУ НЕ ЗАХОДИЛИ (' + inactive.length + ') ═══\n';
+  msg += inactive.length ? inactive.join('\n') : '(все заходили)';
+  if (others.length) {
+    msg += '\n\n═══ ПАРТНЁРЫ / ПРОЧИЕ (' + others.length + ') ═══\n';
+    msg += others.join('\n');
+  }
+
+  ui.alert('📈 Отчёт активности', msg, ui.ButtonSet.OK);
+}
+
+function syncAll() {
+  try {
+    var priceSS = SpreadsheetApp.openById(PRICE_SS_ID);
+    var dataSS  = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheets = priceSS.getSheets();
+    var allProducts = [];
+    var sheetsScanned = [];
+    var SKIP = ['КП_База', 'КП_Менеджеры', 'КП_Каталог', 'КП_Настройки', 'Изменения'];
+    // Листы с НЕСТАНДАРТНОЙ структурой: A=Код, B=Изображение, C=Наименование, D=Описание
+    // (вместо стандартной A=Код, B=Наименование, C=Изображение, D=Описание)
+    var REVERSED_SHEETS = ['Inim EN 54', 'ПС DMtech', 'INIM Адрес', 'Previdia UltraVox', 'ПС'];
+
+    for (var i = 0; i < sheets.length; i++) {
+      var s = sheets[i];
+      var name = s.getName();
+      if (SKIP.indexOf(name) >= 0) continue;
+      if (name.indexOf('КП_') === 0) continue;
+      if (s.getLastRow() < 3) continue;
+
+      var isReversed = REVERSED_SHEETS.indexOf(name.trim()) >= 0;
+      var data = s.getDataRange().getValues();
+      var foundInSheet = 0;
+      for (var j = 0; j < data.length; j++) {
+        var row = data[j];
+        var code = String(row[0] || '').trim();
+        // Колонки наименования и описания зависят от структуры листа
+        var prodName = isReversed
+          ? String(row[2] || '').trim()  // C — наименование
+          : String(row[1] || '').trim(); // B — наименование (стандарт)
+        var descRaw = String(row[3] || '').trim();  // D — описание (везде одинаково)
+        var price = 0;
+        for (var k = 4; k < Math.min(8, row.length); k++) {
+          var v = parseFloat(String(row[k] || '').replace(/\s/g, '').replace(',', '.'));
+          if (!isNaN(v) && v > 0.5 && v < 50000) { price = v; break; }
+        }
+        if ((/^\d{4,7}$/.test(code) || /^[A-Z0-9\-/]{5,}$/i.test(code)) &&
+            prodName.length > 2 && price > 0) {
+          // Обрезаем описание до разумной длины (3000 знаков на товар)
+          var desc = descRaw.length > 3000 ? descRaw.substring(0, 3000) + '...' : descRaw;
+          allProducts.push([code, prodName, price, name, desc, new Date()]);
+          foundInSheet++;
+        }
+      }
+      if (foundInSheet > 0) sheetsScanned.push(name + ' (' + foundInSheet + ')');
+    }
+
+    if (allProducts.length === 0) {
+      return { success: false, error: 'Не найдено товаров в прайс-таблице.' };
+    }
+
+    // Пересоздаём КП_Каталог в DATA_SS (теперь с колонкой Описание)
+    var catSheet = dataSS.getSheetByName('КП_Каталог');
+    if (catSheet) dataSS.deleteSheet(catSheet);
+    catSheet = dataSS.insertSheet('КП_Каталог');
+    catSheet.getRange(1, 1, 1, 6).setValues([['Код', 'Наименование', 'Цена USD', 'Категория', 'Описание', 'Обновлено']])
+      .setBackground('#0E411F').setFontColor('#FFFFFF').setFontWeight('bold');
+    catSheet.setFrozenRows(1);
+    catSheet.setColumnWidth(1, 80);
+    catSheet.setColumnWidth(2, 280);
+    catSheet.setColumnWidth(3, 90);
+    catSheet.setColumnWidth(4, 160);
+    catSheet.setColumnWidth(5, 400);
+    catSheet.setColumnWidth(6, 130);
+    catSheet.getRange(2, 1, allProducts.length, 6).setValues(allProducts);
+
+    // Менеджеры — в DATA_SS
+    var mgrSheet = getOrCreateSheetIn(dataSS, 'КП_Менеджеры', ['Имя', 'Отдел', 'Телефон', 'Email', 'Цвет (#hex)']);
+    mgrSheet.getRange('C:C').setNumberFormat('@');
+    if (mgrSheet.getLastRow() <= 1) {
+      mgrSheet.appendRow(['Александр Иванов', 'B2B', '+373 79 885 000', 'a.ivanov@qgroup.md', '#0E411F']);
+      mgrSheet.appendRow(['Мария Попеску', 'B2C', '+373 69 333 444', 'm.popesku@qgroup.md', '#7FA822']);
+      mgrSheet.appendRow(['Дмитрий Лупу', 'Инженеры', '+373 69 555 666', 'd.lupu@qgroup.md', '#E87820']);
+      mgrSheet.appendRow(['Elena Rusu', 'Vânzări', '+373 69 777 888', 'e.rusu@qgroup.md', '#6AAECC']);
+    }
+
+    return {
+      success: true, productsCount: allProducts.length,
+      sheetsCount: sheetsScanned.length, sheetsList: sheetsScanned.join('\n• '),
+      managersCount: mgrSheet.getLastRow() - 1
+    };
+  } catch (err) {
+    return { success: false, error: err.toString() };
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// КП — сохранение, чтение, удаление (из DATA_SS)
+// ═══════════════════════════════════════════════════════════════
+
+function saveKP(data) {
+  try {
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = getOrCreateSheetIn(ss, 'КП_База', [
+      'Дата', 'Номер КП', 'Тип', 'Язык', 'ФИО клиента', 'Компания', 'Телефон', 'Email',
+      'Адрес', 'Тип объекта', 'Регион', 'Менеджер', 'Сумма (до скидки)', 'Сумма (со скидкой)',
+      'Скидка %', 'Статус', 'Дата создания', 'JSON', 'Создал (email)', 'Роль'
+    ]);
+    // Если лист существовал со старой схемой — дописываем недостающие заголовки
+    if (sheet.getLastColumn() < 20) {
+      sheet.getRange(1, 19, 1, 2).setValues([['Создал (email)', 'Роль']])
+        .setBackground('#0E411F').setFontColor('#FFFFFF').setFontWeight('bold');
+    }
+    var orig = parseFloat((data.totalOrig || '0').replace(/[^0-9.]/g,'')) || 0;
+    var disc = parseFloat((data.total || '0').replace(/[^0-9.]/g,'')) || 0;
+    var discPct = orig > 0 ? Math.round((1 - disc/orig) * 100) : 0;
+    var ctx = getUserContext();
+    var creatorEmail = ctx.email || '';
+    var creatorRole = ctx.role || '';
+    var lastRow = sheet.getLastRow();
+    var updated = false;
+    if (lastRow > 1) {
+      var nums = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
+      for (var i = 0; i < nums.length; i++) {
+        if (nums[i][0] === data.num) {
+          sheet.getRange(i + 2, 1, 1, 20).setValues([[
+            new Date(), data.num, data.type === 'new' ? 'Новый' : 'Постоянный',
+            data.lang || 'RU', data.cl_n, data.cl_co || '', data.cl_ph, data.cl_em,
+            data.cl_ad, data.cl_ty, data.selRegion, data.m_name,
+            '$' + orig.toFixed(0), '$' + disc.toFixed(0),
+            discPct + '%', data.c_st || 'Отправлено',
+            data.date, JSON.stringify(data),
+            creatorEmail, creatorRole
+          ]]);
+          updated = true; break;
+        }
+      }
+    }
+    if (!updated) {
+      sheet.appendRow([
+        new Date(), data.num, data.type === 'new' ? 'Новый' : 'Постоянный',
+        data.lang || 'RU', data.cl_n, data.cl_co || '', data.cl_ph, data.cl_em,
+        data.cl_ad, data.cl_ty, data.selRegion, data.m_name,
+        '$' + orig.toFixed(0), '$' + disc.toFixed(0),
+        discPct + '%', data.c_st || 'Отправлено',
+        data.date, JSON.stringify(data),
+        creatorEmail, creatorRole
+      ]);
+    }
+    return { success: true };
+  } catch(err) {
+    return { success: false, error: err.toString() };
+  }
+}
+
+function getKPs() {
+  try {
+    var ctx = getUserContext();
+    if (!ctx.allowed) return [];
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = ss.getSheetByName('КП_База');
+    if (!sheet || sheet.getLastRow() <= 1) return [];
+    var lastCol = Math.max(18, sheet.getLastColumn());
+    var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, lastCol).getValues();
+    var rows = data.filter(function(r){ return r[1]; }).map(function(r, idx) {
+      var parsed = null;
+      try { parsed = JSON.parse(r[17]); } catch(e){}
+      return {
+        rowIndex: idx + 2,
+        date: r[0] ? Utilities.formatDate(new Date(r[0]), Session.getScriptTimeZone(), 'dd.MM.yyyy') : '',
+        num: r[1], type: r[2], lang: r[3], name: r[4], company: r[5],
+        phone: r[6], email: r[7], addr: r[8], objType: r[9], region: r[10],
+        manager: r[11], totalOrig: r[12], total: r[13], discount: r[14],
+        status: r[15], state: parsed,
+        creator: String(r[18] || '').toLowerCase(), creatorRole: String(r[19] || '')
+      };
+    });
+    // Партнёры видят только свои КП
+    if (ctx.role === 'partner') {
+      rows = rows.filter(function(kp){ return kp.creator === ctx.email; });
+    }
+    return rows;
+  } catch(err) { return []; }
+}
+
+function deleteKP(kpNum) {
+  try {
+    var ctx = getUserContext();
+    if (!ctx.allowed) return { success: false, error: 'Нет доступа' };
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = ss.getSheetByName('КП_База');
+    if (!sheet || sheet.getLastRow() <= 1) return { success: false, error: 'База пуста' };
+    var lastCol = Math.max(18, sheet.getLastColumn());
+    var rng = sheet.getRange(2, 1, sheet.getLastRow() - 1, lastCol).getValues();
+    for (var i = 0; i < rng.length; i++) {
+      if (String(rng[i][1]) === String(kpNum)) {
+        // Партнёру можно удалять только свои КП
+        if (ctx.role === 'partner') {
+          var rowCreator = String(rng[i][18] || '').toLowerCase();
+          if (rowCreator !== ctx.email) {
+            return { success: false, error: 'Это КП создал другой пользователь' };
+          }
+        }
+        sheet.deleteRow(i + 2);
+        return { success: true };
+      }
+    }
+    return { success: false, error: 'КП ' + kpNum + ' не найдено' };
+  } catch(err) {
+    return { success: false, error: err.toString() };
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ДЛЯ 3-х БАЗ (Общая / LED / Партнёрская)
+// ═══════════════════════════════════════════════════════════════
+// Используют тот же формат что и оригинальные saveKP/getKPs/deleteKP
+// но работают с указанным именем листа.
+
+function _saveKPToSheet(data, sheetName) {
+  try {
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = getOrCreateSheetIn(ss, sheetName, [
+      'Дата', 'Номер КП', 'Тип', 'Язык', 'ФИО клиента', 'Компания', 'Телефон', 'Email',
+      'Адрес', 'Тип объекта', 'Регион', 'Менеджер', 'Сумма (до скидки)', 'Сумма (со скидкой)',
+      'Скидка %', 'Статус', 'Дата создания', 'JSON', 'Создал (email)', 'Роль'
+    ]);
+    if (sheet.getLastColumn() < 20) {
+      sheet.getRange(1, 19, 1, 2).setValues([['Создал (email)', 'Роль']])
+        .setBackground('#0E411F').setFontColor('#FFFFFF').setFontWeight('bold');
+    }
+    var orig = parseFloat((data.totalOrig || '0').replace(/[^0-9.]/g,'')) || 0;
+    var disc = parseFloat((data.total || '0').replace(/[^0-9.]/g,'')) || 0;
+    var discPct = orig > 0 ? Math.round((1 - disc/orig) * 100) : 0;
+    var ctx = getUserContext();
+    var lastRow = sheet.getLastRow();
+    var updated = false;
+    if (lastRow > 1) {
+      var nums = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
+      for (var i = 0; i < nums.length; i++) {
+        if (nums[i][0] === data.num) {
+          sheet.getRange(i + 2, 1, 1, 20).setValues([[
+            new Date(), data.num, data.type === 'new' ? 'Новый' : 'Постоянный',
+            data.lang || 'RU', data.cl_n, data.cl_co || '', data.cl_ph, data.cl_em,
+            data.cl_ad, data.cl_ty, data.selRegion, data.m_name,
+            '$' + orig.toFixed(0), '$' + disc.toFixed(0),
+            discPct + '%', data.c_st || 'Отправлено',
+            data.date, JSON.stringify(data),
+            ctx.email || '', ctx.role || ''
+          ]]);
+          updated = true; break;
+        }
+      }
+    }
+    if (!updated) {
+      sheet.appendRow([
+        new Date(), data.num, data.type === 'new' ? 'Новый' : 'Постоянный',
+        data.lang || 'RU', data.cl_n, data.cl_co || '', data.cl_ph, data.cl_em,
+        data.cl_ad, data.cl_ty, data.selRegion, data.m_name,
+        '$' + orig.toFixed(0), '$' + disc.toFixed(0),
+        discPct + '%', data.c_st || 'Отправлено',
+        data.date, JSON.stringify(data),
+        ctx.email || '', ctx.role || ''
+      ]);
+    }
+    return { success: true };
+  } catch(err) { return { success: false, error: err.toString() }; }
+}
+
+function _getKPsFromSheet(sheetName) {
+  try {
+    var ctx = getUserContext();
+    if (!ctx.allowed) return [];
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = ss.getSheetByName(sheetName);
+    if (!sheet || sheet.getLastRow() <= 1) return [];
+    var lastCol = Math.max(18, sheet.getLastColumn());
+    var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, lastCol).getValues();
+    var rows = data.filter(function(r){ return r[1]; }).map(function(r, idx) {
+      var parsed = null;
+      try { parsed = JSON.parse(r[17]); } catch(e){}
+      return {
+        rowIndex: idx + 2,
+        date: r[0] ? Utilities.formatDate(new Date(r[0]), Session.getScriptTimeZone(), 'dd.MM.yyyy') : '',
+        num: r[1], type: r[2], lang: r[3], name: r[4], company: r[5],
+        phone: r[6], email: r[7], addr: r[8], objType: r[9], region: r[10],
+        manager: r[11], totalOrig: r[12], total: r[13], discount: r[14],
+        status: r[15], state: parsed,
+        creator: String(r[18] || '').toLowerCase(), creatorRole: String(r[19] || '')
+      };
+    });
+    // Партнёры видят только свои КП (админ и сотрудники — все)
+    if (ctx.role === 'partner') {
+      rows = rows.filter(function(kp){ return kp.creator === ctx.email; });
+    }
+    return rows;
+  } catch(err) { return []; }
+}
+
+function _deleteKPFromSheet(kpNum, sheetName) {
+  try {
+    var ctx = getUserContext();
+    if (!ctx.allowed) return { success: false, error: 'Нет доступа' };
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = ss.getSheetByName(sheetName);
+    if (!sheet || sheet.getLastRow() <= 1) return { success: false, error: 'База пуста' };
+    var lastCol = Math.max(18, sheet.getLastColumn());
+    var rng = sheet.getRange(2, 1, sheet.getLastRow() - 1, lastCol).getValues();
+    for (var i = 0; i < rng.length; i++) {
+      if (String(rng[i][1]) === String(kpNum)) {
+        if (ctx.role === 'partner') {
+          var rowCreator = String(rng[i][18] || '').toLowerCase();
+          if (rowCreator !== ctx.email) {
+            return { success: false, error: 'Это КП создал другой пользователь' };
+          }
+        }
+        sheet.deleteRow(i + 2);
+        return { success: true };
+      }
+    }
+    return { success: false, error: 'КП ' + kpNum + ' не найдено' };
+  } catch(err) { return { success: false, error: err.toString() }; }
+}
+
+// === ОБЁРТКИ ДЛЯ КАЖДОЙ ГРУППЫ ===
+
+// LED-конструктор
+function saveKP_LED(data)     { return _saveKPToSheet(data, 'КП_База_LED'); }
+function getKPs_LED()          { return _getKPsFromSheet('КП_База_LED'); }
+function deleteKP_LED(kpNum)   { return _deleteKPFromSheet(kpNum, 'КП_База_LED'); }
+
+// Партнёрский конструктор
+function saveKP_Partner(data)  { return _saveKPToSheet(data, 'КП_База_Партнёры'); }
+function getKPs_Partner()      { return _getKPsFromSheet('КП_База_Партнёры'); }
+function deleteKP_Partner(kpNum) { return _deleteKPFromSheet(kpNum, 'КП_База_Партнёры'); }
+
+// ═══════════════════════════════════════════════════════════════
+// КАТАЛОГ — фильтрация для LED-конструктора
+// ═══════════════════════════════════════════════════════════════
+
+// Категории каталога, относящиеся к LED
+var LED_CATEGORIES = ['LED экраны', 'Интерактивные панели'];
+
+// Каталог только LED-категорий
+function getCatalogLED() {
+  var all = getCatalogFromSheet() || [];
+  return all.filter(function(item) {
+    return LED_CATEGORIES.indexOf(String(item.category).trim()) >= 0;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// КАТАЛОГ и МЕНЕДЖЕРЫ — для Web App (из DATA_SS)
+// ═══════════════════════════════════════════════════════════════
+
+function getCatalogFromSheet() {
+  try {
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = ss.getSheetByName('КП_Каталог');
+    if (!sheet || sheet.getLastRow() <= 1) return null;
+    var lastCol = Math.max(5, sheet.getLastColumn());
+    var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, lastCol).getValues();
+    return data.filter(function(r){ return r[0] && r[2]; }).map(function(r) {
+      return {
+        code: String(r[0]), name: String(r[1]),
+        price: parseFloat(r[2]), category: String(r[3] || 'Прочее'),
+        desc: String(r[4] || '')
+      };
+    });
+  } catch(e) { return null; }
+}
+
+function getManagers() {
+  try {
+    var ss = SpreadsheetApp.openById(DATA_SS_ID);
+    var sheet = ss.getSheetByName('КП_Менеджеры');
+    if (!sheet || sheet.getLastRow() <= 1) return null;
+    sheet.getRange('C:C').setNumberFormat('@');
+    var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 5).getValues();
+    var mgrs = data.filter(function(r){ return r[0]; }).map(function(r, i) {
+      var phone = String(r[2] || '');
+      if (phone.indexOf('#ERROR') >= 0 || phone === '') {
+        try {
+          var formula = sheet.getRange(i + 2, 3).getFormula();
+          if (formula) phone = formula;
+          else phone = String(sheet.getRange(i + 2, 3).getDisplayValue() || '');
+        } catch(e){}
+      }
+      return {
+        id: i,
+        name: String(r[0]).trim(),
+        role: String(r[1]).trim(),
+        ph: phone.trim(),
+        em: String(r[3]).trim(),
+        color: r[4] || '#0E411F',
+        init: String(r[0]).split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase()
+      };
+    });
+    mgrs.sort(function(a, b) {
+      if (a.role !== b.role) return a.role.localeCompare(b.role);
+      return a.name.localeCompare(b.name);
+    });
+    mgrs.forEach(function(m, idx){ m.id = idx; });
+    return mgrs;
+  } catch(e) { return null; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PDF — генерация из HTML превью (для мобильной версии)
+// ═══════════════════════════════════════════════════════════════
+
+function generatePDFFromHtml(htmlContent, kpNum, clientName) {
+  try {
+    // Встраиваем нужные CSS-переменные и шрифты, чтобы PDF был стилизован
+    var css = '<style>' +
+      '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+      'body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:12px;line-height:1.4;background:#fff}' +
+      '.pv-card{background:#fff}' +
+      '.pv-hero{background:#0E411F;padding:22px 26px;color:#fff}' +
+      '.pv-hero h1{margin:0;font-size:22px;line-height:1.2}' +
+      '.pv-hero .pv-sub{font-size:12px;color:#DDE8C0;margin-top:6px}' +
+      '.pv-hero .pv-meta{font-size:10.5px;color:#9bb09f;margin-top:9px}' +
+      '.pv-body{padding:22px 26px}' +
+      '.pv-h{font-size:14px;font-weight:bold;color:#0E411F;margin:0 0 4px}' +
+      '.pv-line{height:2.5px;background:#7FA822;width:38px;margin:0 0 12px}' +
+      '.pv-sec{margin-bottom:18px;page-break-inside:avoid}' +
+      '.pv-card-info{background:#f8f9f5;border:1px solid #dde3d8;border-radius:7px;padding:11px 13px;margin-bottom:7px}' +
+      '.pv-card-info .pv-lab{font-size:9px;color:#7FA822;text-transform:uppercase;letter-spacing:.07em;font-weight:bold}' +
+      '.pv-card-info b{display:block;font-size:13px;margin-top:3px}' +
+      '.pv-card-info span{display:block;font-size:11px;color:#666;margin-top:2px}' +
+      '.pv-pain{margin-bottom:5px;border-radius:7px;overflow:hidden;page-break-inside:avoid}' +
+      '.pv-pain .pp{background:#0E411F;color:#fff;padding:10px 13px;font-size:12px;font-weight:bold}' +
+      '.pv-pain .ps{background:#f8f9f5;padding:10px 13px;font-size:11.5px;color:#444;border:1px solid #dde3d8;border-top:none}' +
+      '.pv-tbl{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:8px}' +
+      '.pv-tbl th{background:#0E411F;color:#fff;padding:8px 9px;font-size:10px;text-align:left;text-transform:uppercase}' +
+      '.pv-tbl td{padding:8px 9px;border-bottom:1px solid #eef2e8}' +
+      '.pv-tbl tr:nth-child(even) td{background:#fafbf7}' +
+      '.pv-row-item{background:#fff;border:1px solid #dde3d8;border-radius:8px;padding:11px;margin-bottom:6px;font-size:12px;page-break-inside:avoid}' +
+      '.pv-row-item .pr-name{font-weight:bold;color:#1a1a1a;font-size:13px;margin-bottom:3px}' +
+      '.pv-row-item .pr-m{font-size:10.5px;color:#666;font-family:monospace;margin-bottom:5px}' +
+      '.pv-row-item .pr-tot{display:flex;justify-content:space-between;padding-top:5px;border-top:1px dashed #eef2e8;font-size:11px}' +
+      '.pv-row-item .pr-tot .v{font-weight:bold;color:#0E411F;font-size:13px}' +
+      '.pv-case{display:flex;background:#fff;border:1px solid #dde3d8;border-radius:8px;overflow:hidden;margin-bottom:7px;page-break-inside:avoid}' +
+      '.pv-case .ci-img{width:100px;background-size:cover;background-position:center;flex-shrink:0;background-color:#f0f4ed;position:relative}' +
+      '.pv-case .ci-img .b{position:absolute;top:5px;left:5px;background:#7FA822;color:#fff;font-size:8px;font-weight:bold;padding:2px 7px;border-radius:18px}' +
+      '.pv-case .ci-body{padding:10px 12px;flex:1}' +
+      '.pv-case .ci-t{font-weight:bold;font-size:12.5px;color:#0E411F;margin-bottom:4px}' +
+      '.pv-case .ci-s{font-size:11px;color:#444;line-height:1.45}' +
+      '.pv-case .ci-u{font-size:10px;color:#7FA822;margin-top:5px;display:block;text-decoration:none;word-break:break-all}' +
+      '.pv-tot{background:#0E411F;color:#fff;border-radius:10px;padding:15px 18px;margin:10px 0;page-break-inside:avoid}' +
+      '.pv-tot .pt-l{font-size:10px;color:#DDE8C0;text-transform:uppercase;letter-spacing:.06em}' +
+      '.pv-tot .pt-v{font-size:26px;font-weight:bold;margin-top:3px}' +
+      '.pv-tot .pt-orig{font-size:12px;color:#9bb09f;text-decoration:line-through;margin-top:2px}' +
+      '.pv-cond{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}' +
+      '.pv-cond .c{background:#f8f9f5;border:1px solid #dde3d8;border-radius:7px;padding:10px 8px;text-align:center}' +
+      '.pv-cond .c .ico{font-size:18px;line-height:1}' +
+      '.pv-cond .c .v{font-size:11.5px;font-weight:bold;color:#0E411F;margin-top:4px}' +
+      '.pv-cond .c .lab{font-size:9.5px;color:#666;margin-top:2px}' +
+      '.pv-foot{background:#0E411F;color:#fff;padding:18px 26px;border-top:2px solid #7FA822;page-break-inside:avoid}' +
+      '.pv-foot b{font-size:14px;display:block}' +
+      '.pv-foot .role{font-size:11.5px;color:#DDE8C0;margin-top:2px}' +
+      '.pv-foot .ph{font-size:12px;color:#fff;margin-top:8px}' +
+      '.pv-foot .ph .lab{color:#7FA822;font-weight:bold}' +
+      '.pv-foot .ad{font-size:11px;color:#DDE8C0;margin-top:8px;line-height:1.5}' +
+      '@page{size:A4;margin:8mm}' +
+      '</style>';
+
+    var fullHtml = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>КП ' + kpNum + '</title>' + css + '</head><body>' + htmlContent + '</body></html>';
+    var blob = Utilities.newBlob(fullHtml, 'text/html', 'kp.html').getAs('application/pdf');
+    var safeName = String(clientName || 'Client').replace(/[^a-zA-Zа-яА-ЯăâîșțĂÂÎȘȚ0-9_\-\s]/g, '').trim() || 'Client';
+    var pdfName = 'КП_' + kpNum + '_' + safeName + '.pdf';
+    blob.setName(pdfName);
+
+    // Сохраняем в специальную папку Google Drive
+    var folderName = 'QGROUP — КП PDF';
+    var folder;
+    var folders = DriveApp.getFoldersByName(folderName);
+    if (folders.hasNext()) folder = folders.next();
+    else folder = DriveApp.createFolder(folderName);
+
+    var pdfFile = folder.createFile(blob);
+    // Открыть доступ для всех в Workspace по ссылке
+    pdfFile.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+
+    return { success: true, url: pdfFile.getUrl(), name: pdfName };
+  } catch(err) {
+    return { success: false, error: err.toString() };
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// УТИЛИТА — создать/получить лист в любой таблице
+// ═══════════════════════════════════════════════════════════════
+
+function getOrCreateSheetIn(ss, name, headers) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers])
+      .setBackground('#0E411F').setFontColor('#FFFFFF').setFontWeight('bold');
+    sheet.setFrozenRows(1);
+    for (var i = 1; i <= headers.length; i++) sheet.setColumnWidth(i, 130);
+  }
+  return sheet;
+}

@@ -1,0 +1,88 @@
+<%- include('../partials/admin-head') %>
+
+<header class="page-head">
+  <h1><%= t('admin.activity.title') %> <span class="muted">(<%= pagination.total %>)</span></h1>
+</header>
+
+<form class="filters" action="/admin/activity" method="get">
+  <select name="kind">
+    <option value="all"><%= t('admin.activity.allKinds') %></option>
+    <% ['product','user','kp','login'].forEach(function(k){ %>
+      <option value="<%= k %>" <%= kind === k ? 'selected' : '' %>><%= t('admin.activity.kind.' + k) %></option>
+    <% }); %>
+  </select>
+  <select name="actor">
+    <option value=""><%= t('admin.activity.allActors') %></option>
+    <% actors.forEach(function(a){ %>
+      <option value="<%= a %>" <%= actor === a ? 'selected' : '' %>><%= a %></option>
+    <% }); %>
+  </select>
+  <button type="submit" class="btn btn--ghost"><%= t('search.btn') %></button>
+  <% if (kind !== 'all' || actor) { %><a href="/admin/activity" class="btn btn--ghost"><%= t('catalog.reset') %></a><% } %>
+</form>
+
+<% if (!rows.length) { %>
+  <div class="empty"><%= t('admin.activity.empty') %></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th><%= t('admin.activity.th.when') %></th>
+          <th><%= t('admin.activity.th.who') %></th>
+          <th><%= t('admin.activity.th.what') %></th>
+          <th><%= t('admin.activity.th.target') %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% rows.forEach(function(r){
+             var when = '';
+             if (r.at) { var m = String(r.at).split(/[ T]/); var d=(m[0]||'').split('-'); when = (d[2]||'')+'.'+(d[1]||'')+'.'+(d[0]||'')+' '+((m[1]||'').slice(0,5)); }
+             var lbl = t('act.' + r.kind + '.' + r.action); if (lbl.indexOf('act.') === 0) lbl = r.action;
+             var kindCls = { product:'badge--ok', user:'badge--muted', kp:'badge--info', login:'badge--soft' }[r.kind] || 'badge--muted';
+        %>
+          <tr>
+            <td class="muted nowrap mono"><%= when %></td>
+            <td>
+              <strong><%= r.actor %></strong>
+              <% if (r.actor_role) { %><span class="muted">· <%= roleLabel(r.actor_role) %></span><% } %>
+            </td>
+            <td>
+              <span class="badge <%= kindCls %>"><%= t('admin.activity.kind.' + r.kind) %></span>
+              <%= lbl %>
+            </td>
+            <td>
+              <% if (r.kind === 'product') { %>
+                <% if (r.t_code) { %><span class="mono"><%= r.t_code %></span> <% } %><%= r.t_name %>
+              <% } else if (r.kind === 'user') { %>
+                <span class="mono"><%= r.t_code %></span><% if (r.t_name) { %> (<%= r.t_name %>)<% } %>
+              <% } else if (r.kind === 'kp') { %>
+                <span class="mono"><%= r.t_code %></span><% if (r.t_name) { %> — <%= r.t_name %><% } %>
+                <% if (r.t_extra) { %><span class="muted"> · <%= r.t_extra %></span><% } %>
+              <% } else { %>
+                —
+              <% } %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (pagination.pages > 1) { %>
+    <nav class="pagination">
+      <% const qs = (n) => {
+           const p = new URLSearchParams();
+           if (kind !== 'all') p.set('kind', kind);
+           if (actor) p.set('actor', actor);
+           p.set('page', n);
+           return '/admin/activity?' + p.toString();
+         }; %>
+      <% if (pagination.page > 1) { %><a href="<%= qs(pagination.page - 1) %>" class="btn btn--ghost btn--sm"><%= t('common.prev') %></a><% } %>
+      <span class="pagination__info"><%= t('common.pageOf', { page: pagination.page, pages: pagination.pages }) %></span>
+      <% if (pagination.page < pagination.pages) { %><a href="<%= qs(pagination.page + 1) %>" class="btn btn--ghost btn--sm"><%= t('common.next') %></a><% } %>
+    </nav>
+  <% } %>
+<% } %>
+
+<%- include('../partials/admin-foot') %>

@@ -1,0 +1,21 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+data/
+*.db
+*.sqlite
+*.sqlite3
+uploads/
+dist/
+build/
+.vscode/
+*.log
+npm-debug.log*
+yarn-debug.log*
+.npm
+.eslintcache
+.idea/
+
+# Large source price lists — too big for GitHub; imported via scripts/importPrice.js
+*.xlsx

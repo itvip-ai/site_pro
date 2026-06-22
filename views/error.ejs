@@ -1,0 +1,9 @@
+<%- include('partials/head') %>
+
+<div class="error-page">
+  <div class="error-page__code"><%= typeof code !== 'undefined' ? code : 500 %></div>
+  <p class="error-page__msg"><%= typeof message !== 'undefined' ? message : t('error.500.msg') %></p>
+  <a href="/" class="btn btn--primary"><%= t('error.home') %></a>
+</div>
+
+<%- include('partials/foot') %>

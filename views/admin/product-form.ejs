@@ -1,0 +1,95 @@
+<%- include('../partials/admin-head') %>
+
+<header class="page-head">
+  <h1><%= isNew ? t('admin.form.newTitle') : t('admin.form.editTitle') %></h1>
+  <a href="/admin/products" class="btn btn--ghost"><%= t('admin.form.backToList') %></a>
+</header>
+
+<form class="form form--card"
+      action="<%= isNew ? '/admin/products' : '/admin/products/' + product.id %>"
+      method="post" enctype="multipart/form-data">
+
+  <div class="form-grid">
+    <label class="field">
+      <span><%= t('admin.form.code') %> *</span>
+      <input type="text" name="code" value="<%= product.code || '' %>" required />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.form.category') %></span>
+      <select name="category">
+        <option value=""><%= t('admin.form.selectCategory') %></option>
+        <% categories.forEach(function(c) { %>
+          <option value="<%= c.category %>" <%= product.category === c.category ? 'selected' : '' %>><%= c.category %></option>
+        <% }); %>
+      </select>
+    </label>
+
+    <label class="field field--full">
+      <span><%= t('admin.form.nameRu') %> *</span>
+      <input type="text" name="name" value="<%= product.name || '' %>" required />
+    </label>
+
+    <label class="field field--full">
+      <span><%= t('admin.form.nameRo') %></span>
+      <input type="text" name="name_ro" value="<%= product.name_ro || '' %>" />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.form.newCategory') %></span>
+      <input type="text" name="category_new" placeholder="<%= t('admin.form.newCategoryPlaceholder') %>" />
+    </label>
+
+    <div class="field"><span></span></div>
+
+    <label class="field">
+      <span><%= t('admin.form.retail') %></span>
+      <input type="text" inputmode="decimal" name="price_retail" value="<%= product.price_retail != null ? product.price_retail : '' %>" />
+    </label>
+
+    <label class="field">
+      <span><%= t('admin.form.partner') %></span>
+      <input type="text" inputmode="decimal" name="price_partner" value="<%= product.price_partner != null ? product.price_partner : '' %>" />
+    </label>
+
+    <label class="field field--full">
+      <span><%= t('admin.form.descRu') %></span>
+      <textarea name="description" rows="5"><%= product.description || '' %></textarea>
+    </label>
+
+    <label class="field field--full">
+      <span><%= t('admin.form.descRo') %></span>
+      <textarea name="description_ro" rows="5"><%= product.description_ro || '' %></textarea>
+    </label>
+
+    <p class="field field--full muted" style="margin:0"><%= t('admin.form.langHint') %></p>
+
+    <div class="field field--full">
+      <span><%= t('admin.form.photo') %></span>
+      <div class="image-upload">
+        <% if (product.image_path) { %>
+          <img class="image-upload__preview" src="<%= product.thumb_path || product.image_path %>" alt="" />
+        <% } %>
+        <input type="file" name="image" accept="image/*" />
+        <small class="muted"><%= t('admin.form.photoHint') %></small>
+      </div>
+    </div>
+
+    <label class="field field--full checkbox">
+      <input type="checkbox" name="is_active" value="1" <%= product.is_active ? 'checked' : '' %> />
+      <span><%= t('admin.form.showOnSite') %></span>
+    </label>
+
+    <label class="field field--full checkbox">
+      <input type="checkbox" name="is_new" value="1" <%= product.is_new ? 'checked' : '' %> />
+      <span><%= t('admin.form.isNew') %></span>
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn--primary btn--lg"><%= isNew ? t('admin.form.create') : t('admin.form.save') %></button>
+    <a href="/admin/products" class="btn btn--ghost btn--lg"><%= t('admin.form.cancel') %></a>
+  </div>
+</form>
+
+<%- include('../partials/admin-foot') %>

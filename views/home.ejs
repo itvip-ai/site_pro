@@ -1,0 +1,31 @@
+<%- include('partials/head') %>
+
+<section class="hero">
+  <div class="hero__content">
+    <h1><%= t('home.hero.title') %></h1>
+    <p><%= t('home.hero.text') %></p>
+    <div class="hero__actions">
+      <a href="/catalog" class="btn btn--primary btn--lg"><%= t('home.hero.openCatalog') %></a>
+      <% if (!currentUser) { %>
+        <a href="/login" class="btn btn--ghost btn--lg"><%= t('nav.login') %></a>
+      <% } %>
+    </div>
+    <p class="hero__meta"><%- t('home.hero.meta', { products: '<strong>' + totalProducts + '</strong>', categories: '<strong>' + categories.length + '</strong>' }) %></p>
+  </div>
+</section>
+
+<% if (categories.length) { %>
+  <section class="section">
+    <h2 class="section__title"><%= t('home.categories') %></h2>
+    <div class="category-grid">
+      <% categories.forEach(function(c) { %>
+        <a class="category-card <%= c.category === '__new__' ? 'category-card--new' : '' %>" href="/catalog?category=<%= encodeURIComponent(c.category) %>">
+          <span class="category-card__name"><%= c.category === '__new__' ? t('category.new') : c.category %></span>
+          <span class="category-card__count"><%= c.count %></span>
+        </a>
+      <% }); %>
+    </div>
+  </section>
+<% } %>
+
+<%- include('partials/foot') %>

@@ -1,0 +1,104 @@
+<%- include('../partials/admin-head') %>
+
+<header class="page-head">
+  <h1><%= t('admin.products.title') %> <span class="muted">(<%= pagination.total %>)</span></h1>
+  <div class="page-head__actions">
+    <% if (role === 'admin') { %>
+      <details class="export-menu">
+        <summary class="btn btn--ghost">⬇ <%= t('admin.export.btn') %></summary>
+        <form class="export-panel" action="/admin/products/export" method="get">
+          <p class="muted export-panel__hint"><%= t('admin.export.hint') %></p>
+          <div class="export-panel__cats">
+            <% categories.filter(function(c){ return !c.isNew; }).forEach(function(c) { %>
+              <label class="export-cat">
+                <input type="checkbox" name="cat" value="<%= c.category %>" />
+                <span><%= c.category %></span> <span class="muted">(<%= c.count %>)</span>
+              </label>
+            <% }); %>
+          </div>
+          <button type="submit" class="btn btn--primary btn--sm btn--block"><%= t('admin.export.download') %></button>
+        </form>
+      </details>
+    <% } %>
+    <a href="/admin/products/new" class="btn btn--primary"><%= t('admin.dashboard.addProduct') %></a>
+  </div>
+</header>
+
+<form class="filters" action="/admin/products" method="get">
+  <input type="search" name="search" value="<%= search %>" placeholder="<%= t('admin.products.searchPlaceholder') %>" />
+  <select name="category">
+    <option value=""><%= t('admin.products.allCategories') %></option>
+    <% categories.forEach(function(c) { %>
+      <option value="<%= c.category %>" <%= activeCategory === c.category ? 'selected' : '' %>>
+        <%= c.category %> (<%= c.count %>)
+      </option>
+    <% }); %>
+  </select>
+  <button type="submit" class="btn btn--ghost"><%= t('search.btn') %></button>
+  <% if (search || activeCategory) { %><a href="/admin/products" class="btn btn--ghost"><%= t('catalog.reset') %></a><% } %>
+</form>
+
+<% if (!products.length) { %>
+  <div class="empty"><%= t('admin.products.empty') %></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th><%= t('admin.th.photo') %></th><th><%= t('admin.th.code') %></th><th><%= t('admin.th.name') %></th><th><%= t('admin.th.category') %></th>
+          <th class="ta-r"><%= t('admin.th.retail') %></th><th class="ta-r"><%= t('admin.th.partner') %></th><th><%= t('admin.th.status') %></th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(function(p) { %>
+          <tr class="<%= p.is_active ? '' : 'row--hidden' %>">
+            <td class="td-img">
+              <% if (p.thumb_path || p.image_path) { %>
+                <img src="<%= p.thumb_path || p.image_path %>" alt="" />
+              <% } else { %><span class="td-img__none">—</span><% } %>
+            </td>
+            <td class="mono"><%= p.code %></td>
+            <td><a href="/admin/products/<%= p.id %>/edit"><%= p.name %></a></td>
+            <td><%= p.category || '—' %></td>
+            <td class="ta-r mono"><%= formatPrice(p.price_retail) %></td>
+            <td class="ta-r mono"><%= formatPrice(p.price_partner) %></td>
+            <td>
+              <% if (p.is_active) { %><span class="badge badge--ok"><%= t('admin.products.visible') %></span>
+              <% } else { %><span class="badge badge--muted"><%= t('common.hidden') %></span><% } %>
+            </td>
+            <td class="ta-r nowrap">
+              <a href="/admin/products/<%= p.id %>/edit" class="btn btn--ghost btn--sm">✏️</a>
+              <% if (p.is_active) { %>
+                <form action="/admin/products/<%= p.id %>/hide" method="post" class="inline"
+                      onsubmit="return confirm('<%= t('admin.products.confirmHide') %>')">
+                  <button class="btn btn--ghost btn--sm">🚫</button>
+                </form>
+              <% } else { %>
+                <form action="/admin/products/<%= p.id %>/show" method="post" class="inline">
+                  <button class="btn btn--ghost btn--sm">↩️</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (pagination.pages > 1) { %>
+    <nav class="pagination">
+      <% const qs = (n) => {
+           const params = new URLSearchParams();
+           if (search) params.set('search', search);
+           if (activeCategory) params.set('category', activeCategory);
+           params.set('page', n);
+           return '/admin/products?' + params.toString();
+         }; %>
+      <% if (pagination.page > 1) { %><a href="<%= qs(pagination.page - 1) %>" class="btn btn--ghost btn--sm"><%= t('common.prev') %></a><% } %>
+      <span class="pagination__info"><%= t('common.pageOf', { page: pagination.page, pages: pagination.pages }) %></span>
+      <% if (pagination.page < pagination.pages) { %><a href="<%= qs(pagination.page + 1) %>" class="btn btn--ghost btn--sm"><%= t('common.next') %></a><% } %>
+    </nav>
+  <% } %>
+<% } %>
+
+<%- include('../partials/admin-foot') %>

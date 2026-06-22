@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> — <%= t('admin.tagline') %> QGROUP</title>
+  <link rel="icon" href="/images/logo.png" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body class="admin">
+  <aside class="admin-sidebar">
+    <a class="brand brand--admin" href="/admin">
+      <img class="brand__logo" src="/images/logo.png" alt="QGROUP" />
+    </a>
+    <nav class="admin-nav">
+      <a href="/admin" class="<%= section === 'dashboard' ? 'is-active' : '' %>">📊 <%= t('admin.nav.dashboard') %></a>
+      <a href="/admin/products" class="<%= section === 'products' ? 'is-active' : '' %>">📦 <%= t('admin.nav.products') %></a>
+      <a href="/admin/users" class="<%= section === 'users' ? 'is-active' : '' %>">👤 <%= t('admin.nav.users') %></a>
+      <% if (role === 'admin') { %>
+        <a href="/admin/contacts" class="<%= section === 'contacts' ? 'is-active' : '' %>">📇 <%= t('admin.nav.contacts') %></a>
+      <% } %>
+      <a href="/admin/activity" class="<%= section === 'activity' ? 'is-active' : '' %>">📈 <%= t('admin.nav.activity') %></a>
+      <a href="/kp">📄 <%= t('nav.kp') %></a>
+      <a href="/catalog">🌐 <%= t('admin.nav.viewSite') %></a>
+    </nav>
+    <div class="admin-sidebar__foot">
+      <span class="lang-switch">
+        <a href="/lang/ru?return=<%= encodeURIComponent(currentPath) %>" class="<%= lang === 'ru' ? 'is-active' : '' %>">RU</a>
+        <a href="/lang/ro?return=<%= encodeURIComponent(currentPath) %>" class="<%= lang === 'ro' ? 'is-active' : '' %>">RO</a>
+      </span>
+      <div class="user-chip"><%= currentUser.login %> · <%= roleLabel(role) %></div>
+      <form action="/logout" method="post"><button class="btn btn--ghost btn--sm btn--block"><%= t('nav.logout') %></button></form>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-content">
+      <%- include('flash') %>
